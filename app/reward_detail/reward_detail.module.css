@@ -1,0 +1,62 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    height: 100vh;
+    position: relative;
+}
+
+.backButton {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 40px 0 20px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+}
+
+.inputGroup {
+    position: relative;
+    width: 100%;
+}
+
+.input {
+    height: 50px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.submitButton {
+    background-color: #ffd700;
+    color: #000;
+    border: none;
+    border-radius: 25px;
+    padding: 15px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+}
+
+.submitButton:active {
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.1);
+}

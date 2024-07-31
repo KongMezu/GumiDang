@@ -1,71 +1,35 @@
-'use client';
+// app/page.js
+"use client";
 
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
 import styles from './page.module.css';
 
-const HomePage = () => {
+const Onboarding = () => {
   const router = useRouter();
-  const [startLocation, setStartLocation] = useState('');
-  const [endLocation, setEndLocation] = useState('');
+  const [color, setColor] = useState('#E8FF66');
+  
+  const colors = ['#E8FF66', '#FF7AE2', '#99FF66', '#C875FB', '#6D9CF6'];
 
-  const handleStartClick = () => {
-    router.push('/start');
-  };
+  useEffect(() => {
+    // 랜덤 색상
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    setColor(randomColor);
+  }, []);
 
-  const handleEndClick = () => {
-    router.push('/arrive');
-  };
-
-  const handleMeasureClick = () => {
-    if (startLocation && endLocation) {
-      router.push('/count_dis');
-    } else {
-      alert('Please select both start and end locations');
-    }
+  const handleTouch = () => {
+    // 터치 시 work_date로 이동
+    router.push('/work_date');
   };
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>산책기록 입력하기</h1>
-      <div className={styles.section} style={{ '--section-margin-top': 'calc(100px - 50px + 5vh)' }}>
-        <div className={styles.labelWrapper} style={{ '--label-wrapper-justify': 'flex-start' }}>
-          <span className={styles.iconWrapper}>
-            <FaMapMarkerAlt />
-          </span>
-          <span className={styles.label}>시작</span>
-        </div>
-        <div className={styles.searchBox} onClick={handleStartClick}>
-          <span className={styles.searchInput}>시작한 곳을 검색하세요</span>
-          <span className={styles.searchIcon}>
-            <FaSearch />
-          </span>
-        </div>
+    <div className={styles.container} onClick={handleTouch}>
+      <div className={styles.textContainer}>
+        <h1 style={{ color }} className={styles.logoText}>Gummy Dang</h1>
+        <p>Take a walk. Take a gummy!</p>
       </div>
-      <div className={styles.section} style={{ '--section-margin-top': 'calc(30px - 10px + 5vh)' }}>
-        <div className={styles.labelWrapper} style={{ '--label-wrapper-justify': 'flex-end' }}>
-          <span className={styles.label} style={{ '--label-margin-right': '10px' }}>도착</span>
-          <span className={styles.iconWrapper} style={{ '--icon-margin-left': '5px' }}>
-            <FaMapMarkerAlt />
-          </span>
-        </div>
-        <div className={styles.searchBox} onClick={handleEndClick}>
-          <span className={styles.searchInput}>도착한 곳을 검색하세요</span>
-          <span className={styles.searchIcon}>
-            <FaSearch />
-          </span>
-        </div>
-      </div>
-      <button
-        className={styles.button}
-        onClick={handleMeasureClick}
-        disabled={!startLocation || !endLocation}
-      >
-        거리 측정하기
-      </button>
     </div>
   );
 };
 
-export default HomePage;
+export default Onboarding;

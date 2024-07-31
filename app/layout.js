@@ -1,9 +1,6 @@
-// app/layout.js
-import './globals.css';
-
 export const metadata = {
-  title: 'GumiDang',
-  description: '산책 기록 입력 페이지',
+  title: 'test',
+  description: '해피',
 };
 
 export default function RootLayout({ children }) {

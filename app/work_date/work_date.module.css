@@ -1,0 +1,52 @@
+/* work_date.module.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #fff;
+    text-align: center;
+    padding: 20px;
+}
+
+.datePickerWrapper {
+    position: relative;
+    width: 80%;
+    margin-bottom: 1.5rem;
+}
+
+.datePicker {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    appearance: none; /* 기본 UI 숨기기 */
+    background-color: transparent;
+}
+
+.datePicker::-webkit-calendar-picker-indicator {
+    display: none; /* 기본 캘린더 아이콘 숨기기 */
+}
+
+.submitButton {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #90ee90; /* 연한 초록색 */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submitButton.active {
+    background-color: #66bb6a; /* 더 진한 초록색 */
+}
+
+.submitButton:disabled {
+    background-color: #ccc; /* 비활성화 시 회색 */
+    cursor: not-allowed;
+}

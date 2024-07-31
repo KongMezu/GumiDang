@@ -1,0 +1,68 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.backArrow {
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.pageController {
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    font-size: 1.5em;
+    margin: 20px 0;
+}
+
+.map {
+    width: 300px;
+    height: 300px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+}
+
+.rollupJelly {
+    width: 300px;
+    height: 100px;
+    background-color: #eaeaea;
+    margin: 10px 0;
+}
+
+.photoButton, .saveButton {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.photoButton {
+    background-color: #cccccc;
+}
+
+.saveButton {
+    background-color: #b3e5ab;
+}

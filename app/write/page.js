@@ -161,7 +161,7 @@ const WritePage = () => {
         <div>
           <label>코스 입력<br /></label>
           <div>
-            <label>산책 시작점<br /></label>
+            <label>산책 시작<br /></label>
             <input
               type="text"
               id="start-search"
@@ -187,7 +187,7 @@ const WritePage = () => {
             </div>
           )}
           <div>
-            <label>산책 종료점<br /></label>
+            <label>산책 도착<br /></label>
             <input
               type="text"
               id="end-search"

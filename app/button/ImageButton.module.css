@@ -1,0 +1,12 @@
+/* components/ImageButton.module.css */
+.button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .button img {
+    display: block;
+  }
+  

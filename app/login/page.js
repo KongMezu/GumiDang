@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import apiClient from '../utils/apiClient';
+import styles from './page.css';
+import ImageButton from '../button/ImageButton'; // ImageButton 컴포넌트 추가
 
 const Login = () => {
   const [userName, setUsername] = useState('');
@@ -29,12 +31,12 @@ const Login = () => {
     try {
       const response = await apiClient.post('/api/login', { userName, password });
 
-      if (response.data.code === 'COM-000') {
+      if (response.data.code === 'COM-000') {//로그인 성공
         const token = response.headers.authorization;
         localStorage.setItem('Authorization', token);
         router.push('/dashboard');
-      } else {
-        setError('Invalid username or password');
+      } else {//로그인 실패
+        setError('등록된 이메일 혹은 비밀번호가 아닙니다.');
       }
     } catch (err) {
       setError('Server error');
@@ -74,8 +76,8 @@ const Login = () => {
         <button type="submit">로그인</button>
         {error && <p>{error}</p>}
       </form>
-      <button onClick={handleKakaoLogin}>카카오로 로그인</button>
       <button onClick={handleRegisterRedirect}>회원가입</button>
+      <ImageButton onClick={handleKakaoLogin} />
     </div>
   );
 };

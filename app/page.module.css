@@ -1,30 +1,64 @@
-/* page.module.css */
+/*온보딩-CSS
+*/
 
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
 .container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     height: 100vh;
-    background-color: #fff;
     text-align: center;
     padding: 20px;
+    overflow: hidden; 
 }
 
 .textContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 20%;
+    position: absolute;
+    top: 10%; 
 }
 
 .logoText {
-    font-family: 'LOTTERIA CHAB', sans-serif;
-    font-size: 2.5rem;
-    margin: 0; 
-    padding-bottom: 30rem;
+    font-family: 'LOTTERIACHAB', sans-serif;
+    font-size: 3rem;
+    margin: 0;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    -webkit-text-stroke: 0.3px #000;
+    line-height: 1.2;
+    animation: bounce 1.5s infinite;
 }
 
-.p {
-    font-size: 1rem;
-    margin: 10px 0 0;
+.subtitleContainer {
+    position: absolute;
+    bottom: 20%; 
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    margin: 0;
+    color: #333;
+    text-align: center;
+    line-height: 1.5;
+}
+
+@font-face {
+    font-family: 'LOTTERIACHAB';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/LOTTERIACHAB.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
 }

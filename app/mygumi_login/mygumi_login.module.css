@@ -1,51 +1,72 @@
+/*
+나의 구미 로그인시(구미가 모였을 시) 보이는 화면 -CSS
+*/
+
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0 20px;
     background-color: #fff;
+    padding: 20px;
     height: 100vh;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
     position: relative;
 }
 
-.backButton {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    top: 25px;
+    position: relative;
 }
 
 .title {
     font-size: 24px;
     font-weight: bold;
-    margin: 0;
-    margin-top: 40px;
+    text-align: center;
+    flex: 1;
+}
+
+.backArrow {
+    cursor: pointer;
+    font-size: 24px;
+    position: absolute;
+    left: 20px;
+    top: 25px;
 }
 
 .menuButton {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: none;
-    border: none;
-    font-size: 24px;
     cursor: pointer;
+    font-size: 24px;
+    position: absolute;
+    right: 20px;
+    top: 25px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    flex: 1;
+    justify-content: center;
 }
 
 .gumiBox {
     width: 80%;
-    height: 800px;
+    height: 700px;
     background-color: #e0e0e0;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 20px 0;
+    top: 10px;
     overflow-y: auto;
-    position: relative; 
+    position: relative;
     padding-bottom: 80px;
 }
 
@@ -57,11 +78,17 @@
 }
 
 .gumi {
-    width: 50px;
-    height: 50px;
+    width: 70px;
+    height: 70px;
     background-color: #b1b1b1;
     border-radius: 50%;
     cursor: pointer;
+    background-size: cover;
+    background-position: center;
+}
+
+.draggingGumi {
+    opacity: 0.5;
 }
 
 .rollupJelly {
@@ -72,9 +99,47 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: auto; 
-    margin-bottom: 20px; 
+    margin-top: auto;
+    margin-bottom: 20px;
+    position: relative;
 }
+
+.rewardContainer {
+    position: absolute;
+    top: -50px; /* 롤업젤리 합계 위에 위치하도록 조정 */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+}
+
+.rewardButton {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+}
+
+/*컨페티는 복잡하니까 나중에
+/* .confetti {
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 100px;
+    height: 100px;
+    background: url('https://via.placeholder.com/100x100') no-repeat center center;
+    background-size: contain;
+    animation: confettiAnimation 3s ease-in-out;
+}
+
+@keyframes confettiAnimation {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0); }
+} */
 
 .addButton {
     background-color: #d4f1c4;
@@ -87,8 +152,19 @@
     font-weight: bold;
     cursor: pointer;
     position: absolute;
-    bottom: 20px; 
+    bottom: 20px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.addButton.dropping {
+    background-color: #fff;
+    color: #800080; /* 보라색 X 표시 */
+    font-size: 36px;
+    font-weight: bold;
 }
 
 .addButton:active {
@@ -105,16 +181,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
 }
 
 .detailBox {
-    width: 80%;
+    width: 300px; /* 상세 페이지 크기를 늘립니다. */
+    height: 500px; /* 세로 크기를 더 키웁니다. */
     background-color: #fff;
     border-radius: 20px;
-    padding: 20px;
+    padding: 20px; /* 패딩을 늘려서 내부 요소 크기를 조정합니다. */
     display: flex;
     flex-direction: column;
     align-items: center;
+    z-index: 2;
 }
 
 .detailHeader {
@@ -122,42 +201,52 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* 마진을 조정합니다. */
 }
 
 .detailDate {
-    font-size: 18px;
+    font-size: 18px; /* 폰트 크기를 조정합니다. */
     font-weight: bold;
 }
 
-.editButton, .deleteButton {
+.deleteButton {
     background: none;
     border: none;
-    font-size: 16px;
+    font-size: 18px; /* 폰트 크기를 조정합니다. */
     cursor: pointer;
 }
 
 .detailText {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* 마진을 조정합니다. */
+    font-size: 14px; /* 폰트 크기를 조정합니다. */
+    font-weight: bold;
 }
 
 .detailImage {
     width: 100%;
-    height: 150px;
+    height: 250px; /* 높이를 늘립니다. */
     background-color: #ccc;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* 마진을 조정합니다. */
+    cursor: pointer;
+}
+
+.detailImage img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* 이미지 비율을 유지합니다. */
 }
 
 .detailRollupJelly {
     width: 80%;
-    height: 50px;
+    height: 50px; /* 높이를 조정합니다. */
     background-color: #ccc;
     border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 14px; /* 폰트 크기를 조정합니다. */
 }

@@ -1,3 +1,6 @@
+/*
+산책기록 입력하기 - 시작지& 도착지 - CSS
+*/
 .container {
     display: flex;
     flex-direction: column;

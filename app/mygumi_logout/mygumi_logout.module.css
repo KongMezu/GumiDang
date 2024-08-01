@@ -1,39 +1,51 @@
+/*
+나의 구미 (로그아웃 or 로그인은 했지만 모은 구미 없는 상태)
+*/
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     height: 100vh;
-    background-color: #fff;
-    padding: 0 20px;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    padding: 20px;
 }
 
-.backButton {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+    margin-bottom: 20px;
 }
 
 .title {
     font-size: 24px;
     font-weight: bold;
-    margin: 0;
-    margin-top: 40px;
+    text-align: center;
+    flex: 1;
+}
+
+.backArrow {
+    cursor: pointer;
+    font-size: 24px;
+    position: absolute;
+    left: 20px;
 }
 
 .gumiBox {
-    width: 80%;
-    height: 300px;
-    background-color: #b1b1b1;
+    width: 90%; 
+    height: 500px; 
+    background-color: #f0f0f0;
     border-radius: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px 0;
+    margin: 30px 0;
 }
 
 .gumiText {

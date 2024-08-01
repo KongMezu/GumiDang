@@ -1,4 +1,9 @@
-// app/page.js
+/*온보딩
+
+터치하면 - 다음 화면 넘어가기(일단 임시로 work_date(산책기록 입력하기 날짜)) 로 감
+통통 튕김.
+*/
+
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -12,21 +17,26 @@ const Onboarding = () => {
   const colors = ['#E8FF66', '#FF7AE2', '#99FF66', '#C875FB', '#6D9CF6'];
 
   useEffect(() => {
-    // 랜덤 색상
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
     setColor(randomColor);
   }, []);
 
   const handleTouch = () => {
-    // 터치 시 work_date로 이동
+    // 일단 임시로 date 선택으로 이동
     router.push('/work_date');
   };
 
   return (
     <div className={styles.container} onClick={handleTouch}>
       <div className={styles.textContainer}>
-        <h1 style={{ color }} className={styles.logoText}>Gummy Dang</h1>
-        <p>Take a walk. Take a gummy!</p>
+        <h1 style={{ color }} className={styles.logoText}>
+          Gummy<br />Dang
+        </h1>
+      </div>
+      <div className={styles.subtitleContainer}>
+        <p className={styles.subtitle}>
+          Take a walk.<br />Take a gummy!
+        </p>
       </div>
     </div>
   );

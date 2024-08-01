@@ -1,3 +1,9 @@
+/*
+리워드 - 배송정보 입력
+해야할거 
+1) 배송정보 다 입력 받으면 - 백으로 넘기기
+*/
+
 'use client';
 
 import React, { useState } from 'react';
@@ -17,7 +23,7 @@ const RewardDetail = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // 배송 신청 처리 로직
+        // 배송 신청 처리
     };
 
     const handleComplete = (data) => {

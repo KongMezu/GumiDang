@@ -1,7 +1,13 @@
+/*
+리워드 페이지
+해야할거:
+1) 저 리워드 받은 횟수는 어디서 가져와야할까.. 백이 맞을거 같은데 무슨 값에서 ..가져와야
+*/
 'use client';
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { FaArrowLeft } from 'react-icons/fa'; 
 import styles from './reward.module.css';
 
 const Reward = () => {
@@ -17,8 +23,10 @@ const Reward = () => {
 
     return (
         <div className={styles.container}>
-            <button className={styles.backButton} onClick={handleBackClick}>←</button>
-            <h1 className={styles.title}>리워드</h1>
+            <div className={styles.header}>
+                <FaArrowLeft className={styles.backArrow} onClick={handleBackClick} />
+                <h1 className={styles.title}>리워드</h1>
+            </div>
             <div className={styles.content}>
                 <div className={styles.emoji}>🎁</div>
                 <p className={styles.congratsText}>축하해요!<br />배송정보를 입력하고 젤리를 받으세요!</p>

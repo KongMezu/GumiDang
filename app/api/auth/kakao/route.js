@@ -9,8 +9,8 @@ export async function GET(req) {
     const response = await axios.post('https://kauth.kakao.com/oauth/token', null, {
       params: {
         grant_type: 'authorization_code',
-        client_id: 'YOUR_KAKAO_CLIENT_ID',//.env 이용한 환경변수 처리
-        redirect_uri: 'YOUR_REDIRECT_URI',
+        client_id: '카카오 클라이언트 아이디',//.env 이용한 환경변수 처리
+        redirect_uri: '카카오서버 인증 코드 엔드포인트 uri',
         code: code,
       },
     });

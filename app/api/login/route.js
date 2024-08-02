@@ -8,17 +8,15 @@ export async function post(req) {
     const response = await axios.post('https://gummy-dang.com/api/login', { userName, password });
 
     if (response.data.code === 'COM-000') {
-      //const { data } = response.data;
-      const token = response.headers['AccessToken'];
-      //local storage 이름 통일
-      //const res = NextResponse.json({ code: 'COM-000', data });
-      //res.cookies.set('refreshToken', response.headers['set-cookie'][0], { httpOnly: true });
+      const token = response.headers['authorization']; // 'Authorization' 소문자로 수정
 
       if (token) {
-        res.headers.set('AccessToken', token);
+        const res = NextResponse.json({ code: 'COM-000', data: response.data.data });
+        res.headers.set('Authorization', token); // 응답 헤더에 토큰 설정
+        return res;
+      } else {
+        return NextResponse.json({ code: 'AUTH-ERROR', message: 'Token not found' }, { status: 401 });
       }
-
-      return res;
     } else {
       return NextResponse.json({ code: 'MEM-001' }, { status: 401 });
     }

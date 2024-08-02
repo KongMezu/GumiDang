@@ -14,6 +14,11 @@ const Register = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [touched, setTouched] = useState({
+    userName: false,
+    password: false,
+    nickname: false,
+  });
 
   const validateEmail = (userName) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -34,14 +39,27 @@ const Register = () => {
     const isPasswordValid = validatePassword(password);
     const isNicknameValid = validateNickname(nickname);
 
-    setEmailError(isEmailValid ? null : "메일 형식을 유지해주세요.");
-    setPasswordError(
-      isPasswordValid ? null : "영문, 숫자를 조합한 8~13자를 입력해주세요"
+    setEmailError(
+      touched.userName && !isEmailValid ? "메일 형식을 유지해주세요." : null
     );
-    setNicknameError(isNicknameValid ? null : "2~8자의 이름을 사용해주세요.");
+    setPasswordError(
+      touched.password && !isPasswordValid
+        ? "영문, 숫자를 조합한 8~13자를 입력해주세요"
+        : null
+    );
+    setNicknameError(
+      touched.nickname && !isNicknameValid ? "2~8자의 이름을 사용해주세요." : null
+    );
 
     setIsFormValid(isEmailValid && isPasswordValid && isNicknameValid);
-  }, [userName, password, nickname]);
+  }, [userName, password, nickname, touched]);
+
+  const handleBlur = (field) => {
+    setTouched({
+      ...touched,
+      [field]: true,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,13 +92,16 @@ const Register = () => {
   return (
     <div>
       <h1>회원가입</h1>
-      <p>로그인에 사용할<br/>정보를 입력해 주세요.</p>
+      <p>
+        로그인에 사용할<br />정보를 입력해 주세요.
+      </p>
       <form onSubmit={handleSubmit}>
         <div>
           <input
             type="text"
             value={userName}
             onChange={(e) => setUsername(e.target.value)}
+            onBlur={() => handleBlur("userName")}
             placeholder="이메일"
             required
           />
@@ -91,6 +112,7 @@ const Register = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onBlur={() => handleBlur("password")}
             placeholder="비밀번호"
             required
           />
@@ -101,6 +123,7 @@ const Register = () => {
             type="text"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
+            onBlur={() => handleBlur("nickname")}
             placeholder="닉네임"
             required
           />

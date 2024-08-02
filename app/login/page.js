@@ -1,5 +1,5 @@
 'use client';
-
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import apiClient from '../utils/apiClient';
@@ -12,18 +12,9 @@ const Login = () => {
   const [error, setError] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const token = localStorage.getItem('Authorization');
-    if (token) {
-      apiClient.get('/api/verify-token')
-        .then(() => {
-          router.push('/dashboard');
-        })
-        .catch(() => {
-          localStorage.removeItem('Authorization');
-        });
-    }
-  }, [router]);
+  /*useEffect(() => {
+    const token = window.localStorage.getItem('AccessToken');
+  }, [router]);*/
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,9 +23,11 @@ const Login = () => {
       const response = await apiClient.post('/api/login', { userName, password });
 
       if (response.data.code === 'COM-000') {//로그인 성공
-        const token = response.headers.authorization;
-        localStorage.setItem('Authorization', token);
-        router.push('/dashboard');
+        console.log(response.headers.Authorization);
+        const token = response.headers.Authorization;
+        console.log(token);
+        window.localStorage.setItem('AccessToken', token);//통일
+        router.push('/mygumi_login');
       } else {//로그인 실패
         setError('등록된 이메일 혹은 비밀번호가 아닙니다.');
       }
@@ -42,7 +35,7 @@ const Login = () => {
       setError('Server error');
     }
   };
-
+  
   const handleKakaoLogin = () => {
     window.location.href = 'https://gummy-dang.com/oauth2/authorization/kakao';
   };

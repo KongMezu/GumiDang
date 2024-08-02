@@ -13,17 +13,24 @@ apiRoute.use(upload.single('file'));
 
 apiRoute.post(async (req, res) => {
   const formData = new FormData();
-  const { title, content } = req.body;
+  const { title, content, startAddress, startLat, startLng, endAddress, endLat, endLng, waypoints } = req.body;
 
   formData.append('title', title);
   formData.append('content', content);
+  formData.append('startAddress', startAddress);
+  formData.append('startLat', startLat);
+  formData.append('startLng', startLng);
+  formData.append('endAddress', endAddress);
+  formData.append('endLat', endLat);
+  formData.append('endLng', endLng);
+  formData.append('waypoints', waypoints);
 
   if (req.file) {
     formData.append('file', req.file.buffer, req.file.originalname);
   }
 
   try {
-    const response = await axios.post('https://gummy-dang.com/v1/posts', formData, {
+    const response = await axios.post('구미당', formData, {//api 나오면 수정
       headers: {
         ...formData.getHeaders(),
       },

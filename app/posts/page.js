@@ -31,6 +31,10 @@ const PostsList = () => {
         router.push(`/posts/${id}`);
     };
 
+    const handleWriteClick = () => {
+        router.push('/write'); // 페이지를 '/write'로 설정
+    };
+
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>산책구경</h1>
@@ -43,6 +47,7 @@ const PostsList = () => {
                 ))}
             </div>
             {error && <p className={styles.error}>{error}</p>}
+            <button className={styles.writeButton} onClick={handleWriteClick}>+</button>
         </div>
     );
 };

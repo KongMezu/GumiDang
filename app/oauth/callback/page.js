@@ -8,12 +8,12 @@ const OauthLoginPage = () => {
   const router = useRouter();
   const { searchParams } = new URL(window.location.href);
   const accessToken = searchParams.get('token');
-  // const nickname = searchParams.get('nickname');
+  const nickname = searchParams.get('nickname');
 
   useEffect(() => {
     if (accessToken) {
       window.localStorage.setItem('AccessToken', accessToken);
-      // window.localStorage.setItem('nickname', nickname);
+      window.localStorage.setItem('nickname', nickname);
       router.push('/mygumi_login');
     } else {
       console.error('Access token not found');

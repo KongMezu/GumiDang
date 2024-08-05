@@ -13,7 +13,7 @@ const PostsList = () => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get('https://gummy-dang.com//api/post/list');
+                const response = await axios.get('https://gummy-dang.com/api/post/list');
                 if (response.data.code === 'COM-000') {
                     setPosts(response.data.data);
                 } else {

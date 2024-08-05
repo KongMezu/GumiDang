@@ -1,7 +1,6 @@
-/*161줄 실제 회원 id 추출 방법 + userName 인지 로그인 토큰 등의 형태일지 */
-
 'use client';
 
+import apiClient from '../utils/apiClient';
 import { useState, useEffect } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 
@@ -90,7 +89,6 @@ const LinksSection = styled.div`
 // 하단 링크 영역 스타일
 const BottomLinksSection = styled.div`
   position: absolute;
-  bottom: 300px;
   width: 100%;
   padding: 20px;
   border-top: 1px solid #B3B3B3;
@@ -137,18 +135,13 @@ export default function HamburgerMenu() {
   const handleLogout = async () => {
     // 클라이언트 측에서 인증 정보를 제거합니다.
     localStorage.removeItem('AccessToken');
+    localStorage.removeItem('Nickname');
 
     // 서버 측 로그아웃 요청
     try {
-      await fetch('/api/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      // 로그인 상태를 업데이트합니다.
+      await apiClient.post('/api/logout'); // apiClient를 사용하여 로그아웃 요청
       setIsLoggedIn(false);
+      setNickname(""); // 로그아웃 시 닉네임도 초기화
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -157,31 +150,16 @@ export default function HamburgerMenu() {
   useEffect(() => {
     // 페이지 로드 시 로컬 스토리지에서 로그인 상태를 확인합니다.
     const token = localStorage.getItem('AccessToken');
-    if (token) {
+    const savedNickname = localStorage.getItem('Nickname');
+    
+    if (token && savedNickname) {
       setIsLoggedIn(true);
-      // 추가로 사용자 이름을 서버에서 가져옵니다.
-      fetch('https://gummy-dang.com/api/{id}', { //실제 id 획득 방법
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.nickname) {
-            setNickname(data.nickname);
-          }
-        })
-        .catch(error => {
-          console.error('Failed to fetch user info:', error);
-        });
-    } else { // 토큰없으면
+      setNickname(savedNickname);
+    } else {
       setIsLoggedIn(false);
+      setNickname(""); // 토큰이 없으면 닉네임도 초기화
     }
   }, []);
-
-  console.log(nickname);
 
   return (
     <>
@@ -192,7 +170,8 @@ export default function HamburgerMenu() {
         <UserSection>
           {isLoggedIn ? (
             <p>
-              <UserLink href="/k">{nickname}님</UserLink> <WelcomeMessage>오늘도 가볍게 걸어볼까요?</WelcomeMessage>
+              <UserLink href="/k">{nickname}님</UserLink>
+              <WelcomeMessage>오늘도 가볍게 걸어볼까요?</WelcomeMessage>
             </p>
           ) : (
             <p>
@@ -201,17 +180,17 @@ export default function HamburgerMenu() {
           )}
         </UserSection>
         <LinksSection>
-          <a href="/마이페이지 url">마이페이지</a>
+          <a href="/마이페이지">마이페이지</a>
           <a href="/work_date">산책하기</a>
           <a href="/posts">산책 구경</a>
-          <a href="mygumi_login">나의 산책</a>
+          <a href="/mygumi_login">나의 산책</a>
           {isLoggedIn && (
             <a href="#" onClick={handleLogout}>로그아웃</a>
           )}
         </LinksSection>
         <BottomLinksSection>
-          <a href="/도움 및 의견보내기 url">도움 및 의견 보내기</a>
-          <a href="ABOUTurl">ABOUT</a>
+          <a href="/도움 및 의견보내기">도움 및 의견 보내기</a>
+          <a href="/about">ABOUT</a>
         </BottomLinksSection>
       </Sidebar>
     </>

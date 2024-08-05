@@ -147,8 +147,6 @@ const WritePage = () => {
             postCoordinates: postCoordinates,
         };
 
-        
-
         try {
             // 게시글 데이터 전송
             const response = await axios.post('https://gummy-dang.com/api/post', creatingData, {
@@ -159,6 +157,7 @@ const WritePage = () => {
             if (response.data.code === 'COM-000') {
                 const createdPostId = response.data.data.postId; // 생성된 게시글 ID 가져오기
                 setPostId(createdPostId);
+                await uploadImage(createdPostId); // Call the uploadImage function with the created post ID
             } else {
                 setError('글 작성에 실패했습니다.'); // 실패 시 에러 메시지 설정
             }
@@ -176,17 +175,12 @@ const WritePage = () => {
             setImagePreview(URL.createObjectURL(file)); // 이미지 미리보기 업데이트
         }
     };
-
-    const uploadImage = async (file) => {
-        if (!postId) {
-            setError('게시글 ID가 필요합니다.');
-            return null;
-        }    
+    const uploadImage = async (postId) => {
         const accessToken = localStorage.getItem('AccessToken'); // 로컬 스토리지에서 액세스 토큰 가져오기
+        console.log(accessToken);
         // 이미지 업로드 후 URL 얻기
-        const uploadedImageUrl = imageFile ? await uploadImage(imageFile) : null;
         const formdata = new FormData();
-        formdata.append('file', file); // 업로드할 이미지 파일 추가
+        formdata.append('file', imageFile); // 업로드할 이미지 파일 추가
         try {
             const response = await axios.post(`https://gummy-dang.com/api/image/post?postId=${postId}`, formdata, {
                 headers: {
@@ -195,8 +189,6 @@ const WritePage = () => {
                 },
             });
             if (response.data.code === 'COM-000') {
-                console.log(response.data.code);
-                
                 // 성공 시 게시물 목록으로 이동
                 router.push('/posts');
             } else {
@@ -210,6 +202,37 @@ const WritePage = () => {
         }
     };
 
+    /*
+    const uploadImage = async (a) => {
+        a.preventDefault();  
+        const accessToken = localStorage.getItem('AccessToken'); // 로컬 스토리지에서 액세스 토큰 가져오기
+        console.log(accessToken);
+        // 이미지 업로드 후 URL 얻기
+        const formdata = new FormData();
+        formdata.append('file', file); // 업로드할 이미지 파일 추가
+        try {
+            const response = await axios.post(`https://gummy-dang.com/api/image/post?postId=${postId}`, formdata, {
+                headers: {
+                    'Authorization': accessToken,
+                    'Content-Type': 'multipart/form-data', // 멀티파트 데이터 타입 설정
+                },
+            });
+            console.log(uploadedImageUrl);
+            if (response.data.code === 'COM-000') {
+                
+                // 성공 시 게시물 목록으로 이동
+                router.push('/posts');
+            } else {
+                setError('이미지 업로드에 실패했습니다.');
+                return null;
+            }
+        } catch (error) {
+            console.error('Error details:', error); // 자세한 에러 정보 출력
+            setError('서버 오류가 발생했습니다.');
+            return null;
+        }
+    };
+*/
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>산책코스 작성</h1>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import apiClient from "../utils/apiClient";
 import Congrats from "./congrats"; // Congrats 컴포넌트를 임포트합니다.
+import styles from "./register.module.css"; // CSS 모듈을 임포트합니다.
 
 const Register = () => {
   const [userName, setUsername] = useState("");
@@ -20,6 +21,7 @@ const Register = () => {
     nickname: false,
   });
 
+  //입력 규칙
   const validateEmail = (userName) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(userName);
@@ -34,6 +36,7 @@ const Register = () => {
     return nickname.length >= 2 && nickname.length <= 8;
   };
 
+  //회원가입 입력칸 주의 문구 생성
   useEffect(() => {
     const isEmailValid = validateEmail(userName);
     const isPasswordValid = validatePassword(password);
@@ -67,20 +70,20 @@ const Register = () => {
     if (!isFormValid) return;
 
     try {
-      const response = await apiClient.post("https://gummy-dang.com/api/register", {
+      const response = await apiClient.post("https://gummy-dang.com/api/sign-up", {//회원가입 정보 전송
         userName,
         password,
         nickname,
       });
 
-      if (response.data.code === "COM-000") {
+      if (response.data.code === "COM-000") {//회원 가입 성공
         setSuccess(true);
-      } else if (response.data.code === "EMAIL_DUPLICATE") {
+      } else if (response.data.code === "MEM-000") {//이메일(userName)중복
         setError("중복된 이메일입니다.");
       } else {
         setError("Username already taken");
       }
-    } catch (err) {
+    } catch (error) {
       setError("Server error");
     }
   };
@@ -90,56 +93,56 @@ const Register = () => {
   }
 
   return (
-    <div>
-      <h1>회원가입</h1>
-      <p>
+    <div className={styles.container}>
+      <h1 className={styles.title}>회원가입</h1>
+      <p className={styles.subtitle}>
         로그인에 사용할<br />정보를 입력해 주세요.
       </p>
-      <form onSubmit={handleSubmit}>
-        <div>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.inputContainer}>
           <input
             type="text"
             value={userName}
             onChange={(e) => setUsername(e.target.value)}
             onBlur={() => handleBlur("userName")}
             placeholder="이메일"
+            className={`${styles.input} ${touched.userName && emailError ? styles.errorBorder : ""}`}
             required
           />
-          {emailError && <p style={{ color: "red" }}>{emailError}</p>}
+          {emailError && <p className={styles.errorMessage}>{emailError}</p>}
         </div>
-        <div>
+        <div className={styles.inputContainer}>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             onBlur={() => handleBlur("password")}
             placeholder="비밀번호"
+            className={`${styles.input} ${touched.password && passwordError ? styles.errorBorder : ""}`}
             required
           />
-          {passwordError && <p style={{ color: "red" }}>{passwordError}</p>}
+          {passwordError && <p className={styles.errorMessage}>{passwordError}</p>}
         </div>
-        <div>
+        <div className={styles.inputContainer}>
           <input
             type="text"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             onBlur={() => handleBlur("nickname")}
             placeholder="닉네임"
+            className={`${styles.input} ${touched.nickname && nicknameError ? styles.errorBorder : ""}`}
             required
           />
-          {nicknameError && <p style={{ color: "red" }}>{nicknameError}</p>}
+          {nicknameError && <p className={styles.errorMessage}>{nicknameError}</p>}
         </div>
         <button
           type="submit"
-          style={{
-            backgroundColor: isFormValid ? "blue" : "gray",
-            color: "white",
-          }}
+          className={styles.submitButton}
           disabled={!isFormValid}
         >
           가입 완료
         </button>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p className={styles.errorMessage}>{error}</p>}
       </form>
     </div>
   );

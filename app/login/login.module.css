@@ -1,0 +1,92 @@
+/*프리텐다드*/
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+/*롯데리아*/
+@font-face {
+    font-family: 'LOTTERIACHAB';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/LOTTERIACHAB.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+  
+.container {
+    /* 전체 페이지 배경을 흰색으로 설정하고 중앙 정렬합니다. */
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: 'Pretendard-Regular', sans-serif;
+}
+ /*h1 태그 스타일 설정*/ 
+.container h1 {
+    font-family: 'LOTTERIACHAB', sans-serif;
+    text-align: center;
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+  
+.container form {
+    /* 폼 요소를 세로로 배치합니다. */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+  
+.container div {
+    /* 각 폼 요소 사이에 마진을 추가합니다. */
+    margin-bottom: 10px;
+}
+  
+.container input {
+    /* 입력창의 스타일을 지정합니다. */
+    width: 307px;  /* 입력창의 너비 */
+    height: 41px;  /* 입력창의 높이 */
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;  /* 모서리를 둥글게 설정합니다. */
+    border: 1px solid #ccc;  /* 입력창의 테두리 색상 */
+    box-sizing: border-box;  /* 패딩과 테두리를 포함하여 총 크기를 계산 */
+    transition: border-color 0.3s ease;  /* 테두리 색상 변경에 부드러운 전환 효과 추가 */
+}
+  
+.container input:focus {
+    border-color: #6B8BFD;  /* 입력창에 포커스 시 파란색 테두리 */
+    outline: none;  /* 기본 아웃라인 제거 */
+}
+  
+.submitButton {
+    /* 로그인 버튼의 스타일을 지정합니다. */
+    width: 307px;
+    height: 41px;
+    border-radius: 5px;  /* 모서리를 둥글게 설정합니다. */
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #B3B3B3;  /* 로그인 버튼 배경색 */
+    color: white;  /* 로그인 버튼 글자색 */
+    border: none;  /* 로그인 버튼 테두리 제거 */
+    margin-top: 10px;
+}
+  
+.submitButton:hover {
+    background-color: #005bb5;  /* 로그인 버튼 호버 색상 */
+}
+  
+.registerButton {
+    /* 회원가입 버튼의 스타일을 지정합니다. */
+    width: 80px;
+    height: 19px;
+    background-color: transparent;  /* 투명한 배경 */
+    color: #B3B3B3;  /* 회색 글자색 */
+    border: 1px solid transparent;  /* 투명한 테두리 */
+    font-size: 14px;  /* 폰트 사이즈 */
+    cursor: pointer;
+    margin-top: 10px;
+    /* 회원가입 버튼 아래로 400px의 여백 추가 */
+    margin-bottom: 400px;
+}

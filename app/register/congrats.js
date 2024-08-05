@@ -1,3 +1,5 @@
+/*회원가입 축하 페이지 */
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -6,7 +8,7 @@ const Congrats = () => {
   const router = useRouter();
 
   const handleGoToMemory = () => {
-    router.push('이동할 위치'); // 산책하기 페이지로 이동
+    router.push('/mygumi_login'); // 나의 산책(나의 구미)
   };
 
   return (

@@ -1,0 +1,42 @@
+.container {
+    padding: 20px;
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.post {
+    cursor: pointer;
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.post:hover {
+    background-color: #f5f5f5;
+}
+
+.image {
+    max-width: 100%;
+    height: auto;
+}
+
+.title {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.error {
+    color: red;
+    margin-top: 20px;
+}

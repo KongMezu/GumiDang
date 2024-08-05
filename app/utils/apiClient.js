@@ -11,7 +11,7 @@ apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('AccessToken');
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`; // Bearer와 token 사이에 공백 추가
+      config.headers['Authorization'] = `${token}`; // Bearer와 token 사이에 공백 추가
     }
     return config;
   },

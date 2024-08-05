@@ -29,7 +29,7 @@ const Login = () => {
         const token = response.headers['authorization']; //인증 토큰 처리
 
         if (token) {
-          localStorage.setItem('AccessToken', token.split(' ')[1]); //토큰 추출 : Bearer 접두사 제외 추출
+          localStorage.setItem('AccessToken', token); //토큰 추출 : Bearer 접두사 제외 추출
           localStorage.setItem('Nickname', response.data.data.nickname); // nickname 저장
           router.push('/mygumi_login');// 로그인 성공 시 나의 산책(나의구미) 로 리다이렉트
         } else {
@@ -46,7 +46,6 @@ const Login = () => {
   //카카오 로그인버튼 함수
   const handleKakaoLogin = () => {
     window.location.href = 'https://gummy-dang.com/oauth2/authorization/kakao';
-    router.push('/api/auth/kakao/redirection')
   };
 
   //회원가입 라우팅

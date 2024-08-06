@@ -1,19 +1,13 @@
-/*
-산책기록 입력하기 - 시작지& 도착지
-1) 날짜(work_date) - 시작도착(work_input) - 거리 계산 완료 결과(work_save) : 페이지 컨트롤러로 이동
-*/
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
 import styles from './work_input.module.css';
-import { loadKakaoMap } from "../utils/kakao"; 
+import { loadKakaoMap } from "../utils/kakao";
 
 const InputPage = () => {
     const router = useRouter();
-    const searchParams = useSearchParams();
     const [startLocation, setStartLocation] = useState('');
     const [startLat, setStartLat] = useState(null);
     const [startLon, setStartLon] = useState(null);
@@ -23,23 +17,27 @@ const InputPage = () => {
     const [recordDate, setRecordDate] = useState('');
 
     useEffect(() => {
-        const recordDateFromQuery = searchParams.get('recordDate');
-        const startLocationFromQuery = searchParams.get('startLocation');
-        const startLatFromQuery = searchParams.get('startLat');
-        const startLonFromQuery = searchParams.get('startLon');
+        const urlParams = new URLSearchParams(window.location.search);
+        const recordDateFromQuery = urlParams.get('recordDate');
+        console.log(`Received recordDate: ${recordDateFromQuery}`); // Debugging line
 
         if (recordDateFromQuery) {
             setRecordDate(recordDateFromQuery);
         }
+
+        const startLocationFromQuery = urlParams.get('startLocation');
+        const startLatFromQuery = urlParams.get('startLat');
+        const startLonFromQuery = urlParams.get('startLon');
+
         if (startLocationFromQuery && startLatFromQuery && startLonFromQuery) {
             setStartLocation(startLocationFromQuery);
             setStartLat(parseFloat(startLatFromQuery));
             setStartLon(parseFloat(startLonFromQuery));
         }
-    }, [searchParams]);
+    }, []);
 
     const handleStartClick = () => {
-        router.push('/work_start');
+        router.push(`/work_start?recordDate=${recordDate}`);
     };
 
     const handleEndClick = () => {
@@ -49,17 +47,21 @@ const InputPage = () => {
                 setEndLat(latitude);
                 setEndLon(longitude);
 
-                const kakao = await loadKakaoMap(); 
+                const kakao = await loadKakaoMap();
                 const geocoder = new kakao.maps.services.Geocoder();
 
                 geocoder.coord2Address(longitude, latitude, (result, status) => {
                     if (status === kakao.maps.services.Status.OK) {
                         const locationName = result[0].address.address_name;
                         setEndLocation(locationName);
+                        console.log(`End Location: ${locationName}`); // Debugging line
                     } else {
                         alert('현재 위치를 받아오는 중 문제가 발생했습니다. 다시 시도해 주세요.');
                     }
                 });
+            }, (error) => {
+                console.error(error);
+                alert('현재 위치를 받아오는 중 문제가 발생했습니다. 다시 시도해 주세요.');
             });
         } else {
             alert("현재 위치를 사용할 수 없습니다.");
@@ -73,7 +75,7 @@ const InputPage = () => {
                 startLon,
                 endLat,
                 endLon,
-                recordDate
+                recordDate,
             });
 
             router.push(`/work_count_dis?${params.toString()}`);

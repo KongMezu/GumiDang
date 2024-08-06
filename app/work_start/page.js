@@ -3,19 +3,21 @@
 
 해야하는거 : 다함 / 위도 경도 그건 만들긴 했는데 맞겠지
 */
-"use client";
+'use client';
 
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaMapMarkerAlt, FaArrowLeft } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./start.module.css";
 import { loadKakaoMap } from "../utils/kakao";
 
 const StartPage = () => {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [query, setQuery] = useState("");
     const [locations, setLocations] = useState([]);
-    const [selectedLocation, setSelectedLocation] = useState(null);
+
+    const recordDate = searchParams.get('recordDate');
 
     useEffect(() => {
         const handleSearch = async () => {
@@ -24,7 +26,7 @@ const StartPage = () => {
                 const ps = new kakao.maps.services.Places();
                 ps.keywordSearch(query, (data, status) => {
                     if (status === kakao.maps.services.Status.OK) {
-                        setLocations(data.slice(0, 7)); // 검색 결과 최대 7개 정도 표시 
+                        setLocations(data.slice(0, 7)); 
                     }
                 });
             } else {
@@ -36,19 +38,17 @@ const StartPage = () => {
     }, [query]);
 
     const handleLocationClick = async (location) => {
-        setSelectedLocation(location);
-
-        // 페이지 이동
         const params = new URLSearchParams({
             startLocation: location.place_name,
             startLat: location.y,
-            startLon: location.x
+            startLon: location.x,
+            recordDate
         });
         router.push(`/work_input?${params.toString()}`);
     };
 
     const handleCurrentLocation = () => {
-        if (typeof window !== "undefined" && "geolocation" in navigator) {
+        if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 const { latitude, longitude } = position.coords;
 
@@ -61,7 +61,8 @@ const StartPage = () => {
                             const params = new URLSearchParams({
                                 startLocation: locationName,
                                 startLat: latitude,
-                                startLon: longitude
+                                startLon: longitude,
+                                recordDate
                             });
                             router.push(`/work_input?${params.toString()}`);
                         } else {
@@ -78,7 +79,7 @@ const StartPage = () => {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <FaArrowLeft className={styles.backArrow} onClick={() => router.push("/work_input")} />
+                <FaArrowLeft className={styles.backArrow} onClick={() => router.push(`/work_input?recordDate=${recordDate}`)} />
                 <h1 className={styles.title}>시작지</h1>
             </div>
             <div className={styles.content}>

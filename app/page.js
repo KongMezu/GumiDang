@@ -1,10 +1,13 @@
 /*온보딩
 
-터치하면 - 다음 화면 넘어가기(일단 임시로 work_date(산책기록 입력하기 날짜)) 로 감
-통통 튕김.
-*/
+해야할거
+:
+1) Take a walk.Take a gummy! - 폰트 변경
+2) CSS 값 px -> rem or vw,vh 중 하나 
 
+*/
 "use client";
+
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -22,8 +25,7 @@ const Onboarding = () => {
   }, []);
 
   const handleTouch = () => {
-    // 일단 임시로 date 선택으로 이동
-    router.push('/work_date');
+    router.push('/write');
   };
 
   return (

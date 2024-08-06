@@ -47,7 +47,7 @@ const PostsList = () => {
             <h1 className={styles.title}>산책구경</h1>
             <div className={styles.grid}>
                 {posts.map((post) => (
-                    <div key={post.id} className={styles.post} onClick={() => handlePostClick(post.id)}>
+                    <div key={post.id} className={styles.post} onClick={() => handlePostClick(post.postId)}>
                         {post.imageUrl && <img src={post.imageUrl} alt={post.title} className={styles.image} />}
                         <h2 className={styles.postTitle}>{post.title}</h2>
                     </div>

@@ -97,12 +97,13 @@
 .map {
     width: 300px;
     height: 300px;
+    margin-bottom:50px ;
 }
 
 /* 선택 버튼 스타일 */
 .selectButton {
     position: absolute; /* 고정 위치로 변경 */
-    bottom: -60px; /* 지도 바깥에 위치하도록 설정 */
+    bottom: 0px; /* 지도 바깥에 위치하도록 설정 */
     right: 10px;
     background-color: rgba(155, 238, 142, 0.5);
     border: none;
@@ -161,8 +162,8 @@
 /* 이미지 미리보기 스타일 */
 .imagePreview {
     width: 100%;
-    max-width: 300px;
-    height: auto;
+    width: 300px;
+    height: 300px;
     border-radius: 40px;
     object-fit: cover;
 }

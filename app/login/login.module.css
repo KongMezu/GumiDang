@@ -24,12 +24,23 @@
     font-family: 'Pretendard-Regular', sans-serif;
 }
  /*h1 태그 스타일 설정*/ 
-.container h1 {
+ .container h1 {
     font-family: 'LOTTERIACHAB', sans-serif;
     text-align: center;
     font-size: 40px;
     margin-bottom: 20px;
+    color: white;
+    text-shadow: 
+        -1px -1px 0 #000,  
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000;
 }
+
   
 .container form {
     /* 폼 요소를 세로로 배치합니다. */
@@ -88,5 +99,5 @@
     cursor: pointer;
     margin-top: 10px;
     /* 회원가입 버튼 아래로 400px의 여백 추가 */
-    margin-bottom: 400px;
+    margin-bottom: 300px;
 }

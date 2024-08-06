@@ -44,14 +44,22 @@ const MyGumiLogin = () => {
                 ...record,
             }));
             setGumiList(validGumiList);
+
+            console.log("gumi list:", gumiList);
+            console.log("valid gumi list:", validGumiList);
+
             const totalDistance = validGumiList.reduce((acc, record) => acc + (record.distance || 0), 0);
             setTotalDistance(totalDistance);
+
+            //거리계산
             if (totalDistance >= 100000) {
                 setRewardAvailable(true);
+            } else {
+                setRewardAvailable(false);
             }
         } catch (error) {
             console.error('Error fetching gumi data:', error);
-            setGumiList([]);
+            // setGumiList([]);
             setTotalDistance(0);
         }
     };
@@ -88,11 +96,10 @@ const MyGumiLogin = () => {
                 const detailedGumi = {
                     walkRecordId: recordData.walkRecordId,
                     recordDate: recordData.recordTime,
-                    distance: Math.round(recordData.distance), // 소수점 제거
+                    distance: Math.round(recordData.distance),
                     startLocation,
                     endLocation,
                     imageUrl: recordData.imageUrl,
-                    gummyUrl: recordData.gummyUrl,
                 };
                 setSelectedGumi(detailedGumi);
                 setShowDetail(true);
@@ -190,15 +197,20 @@ const MyGumiLogin = () => {
             });
             const updatedGumiList = gumiList.filter(gumi => gumi.walkRecordId !== id);
             setGumiList(updatedGumiList);
+
+            // 업데이트된 총 거리 재계산
             const newTotalDistance = updatedGumiList.reduce((acc, gumi) => acc + (gumi.distance || 0), 0);
             setTotalDistance(newTotalDistance);
-            setShowDetail(false);
-            setSelectedGumi(null);
+
+            // 보상 조건 재확인
             if (newTotalDistance >= 100000) {
                 setRewardAvailable(true);
             } else {
                 setRewardAvailable(false);
             }
+
+            setShowDetail(false);
+            setSelectedGumi(null);
         } catch (error) {
             console.error('Error deleting gumi:', error);
         }
@@ -250,17 +262,18 @@ const MyGumiLogin = () => {
             <div className={styles.content}>
                 <div className={styles.gumiBox}>
                     <div className={styles.gumiGrid}>
-                        {gumiList.length > 0 && gumiList.map((gumi) => (
+                        {gumiList.length > 0 && gumiList.map((gumi) => {
+                            console.log("render", gumi.gummyUrl);
                             <div
                                 key={gumi.walkRecordId}
                                 className={`${styles.gumi} ${draggingGumi === gumi ? styles.draggingGumi : ''}`}
-                                style={{ backgroundImage: `url(${gumi.gummyUrl})` }}
+                                style={{ backgroundImage: `url('${gumi.gummyUrl}')` }}
                                 onClick={() => handleGumiClick(gumi)}
                                 draggable
                                 onDragStart={() => handleDragStart(gumi)}
                                 onDragEnd={handleDragEnd}
                             ></div>
-                        ))}
+                        })}
                     </div>
                     <div className={styles.rollupJelly}>
                         총 거리: {totalDistance} m

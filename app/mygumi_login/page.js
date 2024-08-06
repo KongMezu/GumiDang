@@ -261,20 +261,23 @@ const MyGumiLogin = () => {
             </div>
             <div className={styles.content}>
                 <div className={styles.gumiBox}>
-                    <div className={styles.gumiGrid}>
-                        {gumiList.length > 0 && gumiList.map((gumi) => {
-                            console.log("render", gumi.gummyUrl);
-                            <div
-                                key={gumi.walkRecordId}
-                                className={`${styles.gumi} ${draggingGumi === gumi ? styles.draggingGumi : ''}`}
-                                style={{ backgroundImage: `url('${gumi.gummyUrl}')` }}
-                                onClick={() => handleGumiClick(gumi)}
-                                draggable
-                                onDragStart={() => handleDragStart(gumi)}
-                                onDragEnd={handleDragEnd}
+                <div className={styles.gumiGrid}>
+                    {gumiList.length > 0 && gumiList.map((gumi) => {
+                        console.log("render", gumi.gummyUrl);
+                    return (  // 'return'을 추가
+                        <div
+                            key={gumi.walkRecordId}
+                            className={`${styles.gumi} ${draggingGumi === gumi ? styles.draggingGumi : ''}`}
+                            style={{ backgroundImage: `url('${gumi.gummyUrl}')` }}
+                            onClick={() => handleGumiClick(gumi)}
+                            draggable
+                            onDragStart={() => handleDragStart(gumi)}
+                            onDragEnd={handleDragEnd}
                             ></div>
-                        })}
-                    </div>
+                        );
+                    })}
+                </div>
+
                     <div className={styles.rollupJelly}>
                         총 거리: {totalDistance} m
                         {rewardAvailable && (

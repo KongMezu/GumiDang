@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
-import styles from './mygumi_login.module.css';
+import styles from './mygumi_logout.module.css';
 import { loadKakaoMap } from "../utils/kakao"; // 카카오 맵 로드 함수 불러오기
 
 const MyGumiLogin = () => {

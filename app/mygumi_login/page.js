@@ -18,6 +18,7 @@ const MyGumiLogin = () => {
     const [selectedGumi, setSelectedGumi] = useState(null);
     const [isDropping, setIsDropping] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
+    
 
     useEffect(() => {
         fetchGumiData();
@@ -51,7 +52,6 @@ const MyGumiLogin = () => {
             const totalDistance = validGumiList.reduce((acc, record) => acc + (record.distance || 0), 0);
             setTotalDistance(totalDistance);
 
-            //거리계산
             if (totalDistance >= 100000) {
                 setRewardAvailable(true);
             } else {
@@ -59,7 +59,7 @@ const MyGumiLogin = () => {
             }
         } catch (error) {
             console.error('Error fetching gumi data:', error);
-            // setGumiList([]);
+
             setTotalDistance(0);
         }
     };

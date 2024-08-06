@@ -13,7 +13,7 @@ const MyGumiLogout = () => {
     useEffect(() => {
         const token = localStorage.getItem('AccessToken');
         if (token) {
-            setIsLoggedIn(true);
+            setIsLoggedIn(true); 
             fetchGumiData(token);
         } else {
             setIsLoggedIn(false);

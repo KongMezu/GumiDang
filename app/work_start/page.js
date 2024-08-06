@@ -1,8 +1,3 @@
-/*
-산책기록_시작지
-
-해야하는거 : 다함 / 위도 경도 그건 만들긴 했는데 맞겠지
-*/
 'use client';
 
 import React, { useState, useEffect } from "react";

@@ -1,9 +1,4 @@
-/*산책기록_로딩페이지
-해야할거:
-1) 쌈뽕한 CSS 애니메이션
-2) 거리계산 로직 -> 완료 되면 work_save로 넘기기
-3) 사탕이미지로 바꾸기
-*/'use client';
+'use client';
 
 import React, { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';

@@ -12,7 +12,7 @@
     font-weight: normal;
     font-style: normal;
 }
-  
+
 .container {
     /* 전체 페이지 배경을 흰색으로 설정하고 중앙 정렬합니다. */
     background-color: white;
@@ -23,8 +23,8 @@
     height: 100vh;
     font-family: 'Pretendard-Regular', sans-serif;
 }
- /*h1 태그 스타일 설정*/ 
- .container h1 {
+
+.container h1 {
     font-family: 'LOTTERIACHAB', sans-serif;
     text-align: center;
     font-size: 40px;
@@ -41,14 +41,14 @@
         2px 2px 0 #000;
 }
 
-  
+
 .container form {
     /* 폼 요소를 세로로 배치합니다. */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-  
+
 .container div {
     /* 각 폼 요소 사이에 마진을 추가합니다. */
     margin-bottom: 10px;

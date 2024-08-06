@@ -17,4 +17,4 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-/*Latout 태그로 햄버거 메뉴 전역 적용 */
+

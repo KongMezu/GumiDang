@@ -1,48 +1,66 @@
-/*
-산책기록 입력하기 - 측정결과 페이지
-1) 날짜(work_date) - 시작도착(work_input) - 거리 계산 완료 결과(work_save) : 페이지 컨트롤러로 이동
-2) 하... 백이랑 연결해서 날짜, 유저이름 가져와야함
-3) 백한테 산책기록 넘버, 시작지, 도착지, 직선거리 값 보내야함
-*/
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { FaArrowLeft } from 'react-icons/fa';
+import axios from 'axios';
 import styles from './work_save.module.css';
 
 const WorkSavePage = () => {
     const [userName, setUserName] = useState('');
     const [date, setDate] = useState({ month: '', day: '' });
-    const [startPosition, setStartPosition] = useState({ lat: 37.5665, lng: 126.9780 }); // 기본 좌표 설정
-    const [endPosition, setEndPosition] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [walkRecordId, setWalkRecordId] = useState(1);
+    const [distance, setDistance] = useState(0);
     const router = useRouter();
-    const searchParams = useSearchParams();
 
-    const startLat = parseFloat(searchParams.get('startLat'));
-    const startLon = parseFloat(searchParams.get('startLon'));
-    const endLat = parseFloat(searchParams.get('endLat'));
-    const endLon = parseFloat(searchParams.get('endLon'));
-    const distance = parseFloat(searchParams.get('distance'));
-    const recordDate = searchParams.get('recordDate');
+    const urlParams = new URLSearchParams(window.location.search);
+    const startLat = parseFloat(urlParams.get('startLat'));
+    const startLon = parseFloat(urlParams.get('startLon'));
+    const endLat = parseFloat(urlParams.get('endLat'));
+    const endLon = parseFloat(urlParams.get('endLon'));
+    const recordDate = urlParams.get('recordDate');
 
     useEffect(() => {
-        // API 호출하여 사용자 이름과 날짜 정보 가져오기 / 와 모르겠습니다!
         const fetchData = async () => {
             try {
-                const response = await fetch('https://gummy-dang.com/api/유저정보랑 날짜 어디');
-                const data = await response.json();
-                setUserName(data.userName);
-                setDate({ month: data.month, day: data.day });
-                setStartPosition({ lat: startLat, lng: startLon });
-                setEndPosition({ lat: endLat, lng: endLon });
+                const token = localStorage.getItem('AccessToken');
+                if (token) {
+                    setIsLoggedIn(true);
+                    const [userResponse, recordsResponse] = await Promise.all([
+                        axios.get('https://gummy-dang.com/api/member', {
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                            },
+                        }),
+                        axios.get('https://gummy-dang.com/api/records', {
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                            },
+                        })
+                    ]);
+
+                    const userData = userResponse.data;
+                    const recordsData = recordsResponse.data;
+
+                    setUserName(userData.userName);
+                    setDate({ month: recordDate.split('-')[1], day: recordDate.split('-')[2] });
+
+                    if (recordsData.data && recordsData.data.walkRecordInfos) {
+                        setWalkRecordId(recordsData.data.walkRecordInfos.length + 1);
+                    } else {
+                        setWalkRecordId(1); // 기본값 설정
+                    }
+                } else {
+                    setIsLoggedIn(false);
+                }
             } catch (error) {
-                console.error('Error fetching user info:', error);
+                console.error('Error fetching data:', error);
             }
         };
 
         fetchData();
-    }, [startLat, startLon, endLat, endLon]);
+    }, [recordDate]);
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -59,21 +77,18 @@ const WorkSavePage = () => {
                 };
                 const map = new window.kakao.maps.Map(mapContainer, mapOption);
 
-                // 시작지점
                 const startMarker = new window.kakao.maps.Marker({
                     position: new window.kakao.maps.LatLng(startLat, startLon),
                     map: map,
-                    title: '시작지'
+                    title: 'Start Point'
                 });
 
-                // 도착지점
                 const endMarker = new window.kakao.maps.Marker({
                     position: new window.kakao.maps.LatLng(endLat, endLon),
                     map: map,
-                    title: '도착지'
+                    title: 'End Point'
                 });
 
-                // 시작지점과 도착지점 사이의 직선거리 선 표시(안예쁨 꾸며야함)
                 const linePath = [
                     new window.kakao.maps.LatLng(startLat, startLon),
                     new window.kakao.maps.LatLng(endLat, endLon)
@@ -89,11 +104,25 @@ const WorkSavePage = () => {
 
                 polyline.setMap(map);
 
-                // 지도 중심을 두 핀의 중간 지점으로 설정(계속 축소하래 미친것)
                 const bounds = new window.kakao.maps.LatLngBounds();
                 bounds.extend(new window.kakao.maps.LatLng(startLat, startLon));
                 bounds.extend(new window.kakao.maps.LatLng(endLat, endLon));
                 map.setBounds(bounds);
+
+                const toRad = (value) => value * Math.PI / 180;
+                const R = 6371e3; // metres
+                const φ1 = toRad(startLat);
+                const φ2 = toRad(endLat);
+                const Δφ = toRad(endLat - startLat);
+                const Δλ = toRad(endLon - startLon);
+
+                const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                          Math.cos(φ1) * Math.cos(φ2) *
+                          Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+                const d = R * c; // in metres
+                setDistance(d);
             });
         };
 
@@ -105,49 +134,60 @@ const WorkSavePage = () => {
     };
 
     const handleSave = async () => {
-        // 백엔드로 거리 값 전송 - 응 안돼 :) 
         try {
-            const response = await fetch('https://gummy-dang.com/api/record', {
-                method: 'POST',
+            const response = await axios.post('https://gummy-dang.com/api/record', {
+                walkRecordId,
+                departureLat: startLat,
+                departureLon: startLon,
+                arrivalLat: endLat,
+                arrivalLon: endLon,
+                recordDate: recordDate,
+            }, {
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    recordTime: recordDate,
-                    distance: distance,
-                    departureLat: startLat,
-                    departureLon: startLon,
-                    arrivalLat: endLat,
-                    arrivalLon: endLon,
-                }),
+                    'Authorization': `Bearer ${localStorage.getItem('AccessToken')}`,
+                }
             });
 
-            if (!response.ok) {
-                const errorMessage = `네트워크 응답이 올바르지 않습니다. 상태 코드: ${response.status}`;
-                throw new Error(errorMessage);
-            }
+            const data = response.data;
+            console.log('Backend response:', data);
 
-            const data = await response.json();
-            console.log('백엔드 응답 데이터:', data);
+            const params = new URLSearchParams({
+                walkRecordId: walkRecordId.toString(),
+                recordDate: data.data.recordTime,
+                distance: data.data.distance,
+                startLocation: `${data.data.departureLat}, ${data.data.departureLon}`,
+                endLocation: `${data.data.arrivalLat}, ${data.data.arrivalLon}`,
+                imageUrl: data.data.imageUrl || 'https://via.placeholder.com/70',
+                jellyImage: getRollupJellyImage(data.data.distance)
+            });
 
-            // mygumi_login 페이지로 이동
-            router.push('/mygumi_login');
+            router.push(`/mygumi_login?${params.toString()}`);
 
         } catch (error) {
-            console.error('거리 전송 중 문제가 발생했습니다:', error);
+            console.error('Error sending data:', error);
         }
+    };
+
+    const getRollupJellyImage = (distance) => {
+        if (distance >= 10000) {
+            return '/11.png';
+        }
+        const index = Math.floor(distance / 1000);
+        return `/${index}.png`;
     };
 
     return (
         <div className={styles.container}>
             <div className={styles.header}>
                 <FaArrowLeft className={styles.backArrow} onClick={handleBack} />
-                <div className={styles.pageController}>...</div>
             </div>
             <div className={styles.content}>
                 <h1 className={styles.title}>{`${date.month}월 ${date.day}일 ${userName}님은 이만큼 걸었어요!`}</h1>
                 <div id="map" className={styles.map}></div>
-                <div className={styles.rollupJelly}>롤업젤리</div>
+                <div className={styles.rollupJelly}>
+                    <img src={getRollupJellyImage(distance)} alt="롤업젤리" />
+                </div>
                 <button onClick={handleSave} className={styles.saveButton}>오늘의 구미 저장하기</button>
             </div>
         </div>

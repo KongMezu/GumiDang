@@ -1,13 +1,12 @@
 /*산책기록_로딩페이지 - CSS
-*/
-.container {
+*/.container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
     text-align: center;
-    padding: 20px;
+    padding: 1.25rem;
     box-sizing: border-box;
     position: relative;
 }
@@ -17,14 +16,14 @@
     align-items: center;
     width: 100%;
     position: absolute;
-    top: 20px;
-    left: 20px;
-    right: 20px;
+    top: 1.25rem;
+    left: 1.25rem;
+    right: 1.25rem;
 }
 
 .backArrow {
     cursor: pointer;
-    font-size: 24px;
+    font-size: 1.5rem;
 }
 
 .content {
@@ -32,13 +31,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 60px; 
+    margin-top: 3.75rem; 
 }
 
 .title {
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: bold;
-    margin-bottom: 20px; 
+    margin-bottom: 1.25rem; 
 }
 
 .loaderContainer {
@@ -46,39 +45,49 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 30px; 
+    margin-bottom: 1.875rem; 
 }
 
 .loader {
     width: 100px;
     height: 100px;
-    border: 8px solid #f3f3f3;
-    border-top: 8px solid #3498db;
     border-radius: 50%;
+    background: conic-gradient(
+        #ff9a9a, 
+        #f8c28b, 
+        #ffed87, 
+        #94ff94, 
+        #8bd8f8, 
+        #9a9aff, 
+        #c28bff, 
+        #f88bd8,
+        #ff9a9a
+    );
+    -webkit-mask-image: radial-gradient(circle, transparent 60%, black 62%);
+    mask-image: radial-gradient(circle, transparent 60%, black 62%);
     animation: spin 2s linear infinite;
 }
 
-.placeholder {
-    width: 100px;
-    height: 100px;
-    border: 8px solid #ccc;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ccc;
-}
-
-.measureButton {
-    background-color: #a0f0a0;
-    border: none;
-    padding: 15px 30px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
+.bouncingText {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 1.5625rem;
+    animation: bounce 1.5s infinite;
 }
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0); 
+    }
+    40% {
+        transform: translateY(-1.25rem); 
+    }
+    60% {
+        transform: translateY(-0.625rem); 
+    }
 }

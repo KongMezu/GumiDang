@@ -1,63 +1,50 @@
-/*
-산책기록_입력하기_날짜입력
-
-해야하는거 : 
-1) 날짜(work_date) - 시작도착(work_input) - 거리 계산 완료 결과(work_save) : 페이지 컨트롤러로 이동
-2) 달력 스크롤형 - 이거 무슨 한달에 138$ 내야 가능( npm install react-datepicker   로 진행 대대적인 CSS 갈아없기)
-3) 거리 입력하기 누르면 페이지 넘어감 & 백api 연결해서 날짜 값 전달
-
-*/
+// 'use client' 디렉티브를 파일의 맨 위에 위치시키기
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import DatePicker from 'react-datepicker';
+import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import './work_date.module.css';
+import './custom-datepicker.css';
 import styles from './work_date.module.css';
+import ko from 'date-fns/locale/ko';
+
+// 로케일 등록
+registerLocale('ko', ko);
 
 export default function WorkDate() {
     const [selectedDate, setSelectedDate] = useState(null);
+    const [token, setToken] = useState(null);
     const router = useRouter();
+
+    useEffect(() => {
+        // 로컬 스토리지에서 토큰 값 가져오기
+        const storedToken = window.localStorage.getItem('AccessToken');
+        if (storedToken) {
+            setToken(storedToken);
+        } else {
+            console.log('No token found in localStorage');
+            // 필요 시 여기에서 사용자에게 로그인 화면으로 리디렉션하는 등의 처리 추가 가능
+        }
+    }, []);
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
 
-    const handleSubmit = async () => {
-        if (!selectedDate) return;
+    const handleSubmit = () => {
+        if (!selectedDate || !token) return;
 
-        // 히히..백 연결이 안대염..왤까요... ㅋㅋㅋㅋㅋ 아 미치겠네 진짜...
-        try {
-            const response = await fetch('https://gummy-dang.com/api/record', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    recordTime: selectedDate.toISOString().split('T')[0],
-                }),
-            });
+        const year = selectedDate.getFullYear();
+        const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+        const day = String(selectedDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        console.log(`Formatted Date: ${formattedDate}`); // Debugging line
 
-            if (!response.ok) {
-                const errorMessage = `네트워크 응답이 올바르지 않습니다. 상태 코드: ${response.status}`;
-                throw new Error(errorMessage);
-            }
+        // 여기에 API 호출 등을 추가하여 토큰을 사용하는 방법을 구현할 수 있습니다.
 
-            const data = await response.json();
-            console.log('백엔드 응답 데이터:', data);
-
-            // 응답 데이터 확인 후 다음 페이지로 이동
-            if (data.code === 'COM-000') {
-                router.push({
-                    pathname: '/work_input',
-                    query: { recordDate: selectedDate.toISOString().split('T')[0] }
-                });
-            } else {
-                console.error('응답 데이터에 오류가 있습니다:', data);
-            }
-        } catch (error) {
-            console.error('날짜 전송 중 문제가 발생했습니다:', error);
-        }
+        router.push(`/work_input?recordDate=${formattedDate}`);
     };
 
     return (
@@ -67,15 +54,16 @@ export default function WorkDate() {
                 <DatePicker
                     selected={selectedDate}
                     onChange={handleDateChange}
-                    dateFormat="yyyy-MM-dd"
-                    className={styles.datePicker}
+                    dateFormat="yyyy년 MM월 dd일"
+                    locale="ko"
+                    className={`${styles.datePicker} datepicker`}
                     placeholderText="날짜를 선택하세요"
                 />
             </div>
             <button
                 className={`${styles.submitButton} ${selectedDate ? styles.active : ''}`}
                 onClick={handleSubmit}
-                disabled={!selectedDate}
+                disabled={!selectedDate || !token}
             >
                 거리 측정하기
             </button>

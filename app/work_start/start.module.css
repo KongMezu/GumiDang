@@ -1,5 +1,5 @@
 /*
-산책기록_시작지- CSS
+산책기록_시작지 - CSS
 */
 
 .container {
@@ -7,10 +7,10 @@
     flex-direction: column;
     align-items: center;
     background-color: #fff;
-    padding: 20px;
+    padding: 1.25rem;
     height: 100vh;
     width: 100%;
-    max-width: 700px;
+    max-width: 43.75rem;
     margin: 0 auto;
 }
 
@@ -18,11 +18,11 @@
     display: flex;
     align-items: center;
     width: 100%;
-    padding-bottom: 10px;
+    padding-bottom: 0.625rem;
 }
 
 .title {
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: bold;
     text-align: center;
     flex: 1;
@@ -40,13 +40,13 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 1.25rem;
 }
 
 .backArrow {
     cursor: pointer;
-    font-size: 24px;
-    margin-right: 10px;
+    font-size: 1.5rem;
+    margin-right: 0.625rem;
 }
 
 .searchBox {
@@ -54,61 +54,62 @@
     align-items: center;
     position: relative;
     width: 100%;
-    max-width: 450px;
+    max-width: 28.125rem;
 }
 
 .input {
     flex: 1;
-    padding: 10px 40px 10px 20px;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    font-size: 16px;
+    padding: 0.625rem 2.5rem 0.625rem 1.25rem;
+    border: 0.0625rem solid #ddd;
+    border-radius: 0.75rem;
+    font-size: 1rem;
 }
 
 .searchButton {
     position: absolute;
-    right: 10px;
+    right: 0.625rem;
     background: none;
     border: none;
     cursor: pointer;
     color: #888;
-    font-size: 20px;
+    font-size: 1.25rem;
 }
 
 .currentLocationButton {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 10px;
-    padding: 10px;
+    margin-top: 0.625rem;
+    padding: 0.625rem;
     background-color: #d5f5d1;
-    border: 1px solid #d5f5d1;
-    border-radius: 12px;
+    border: 0.0625rem solid #d5f5d1;
+    border-radius: 0.75rem;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 1rem;
     color: #000;
     width: 85%;
-    max-width: 450px;
-    margin: 10px auto;
+    max-width: 28.125rem;
+    margin: 0.625rem auto;
 }
 
 .currentLocationButton span {
-    margin-left: 5px;
+    margin-left: 0.3125rem;
 }
 
 .locationList {
     list-style: none;
     padding: 0;
-    margin: 20px 0;
-    border-top: 1px solid #ddd;
+    margin: 1.25rem 0;
+    border-top: 0.0625rem solid #ddd;
     width: 100%;
-    max-width: 450px;
+    max-width: 28.125rem;
 }
 
 .locationItem {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+    padding: 0.625rem;
+    border-bottom: 0.0625rem solid #ddd;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 1rem;
     color: #000;
 }
+

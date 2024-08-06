@@ -6,16 +6,18 @@
     flex-direction: column;
     align-items: center;
     background-color: #fff;
-    padding: 20px;
+    padding: 1.25rem;
     height: 100vh;
     width: 100%;
+    box-sizing: border-box; 
+    overflow: hidden;
 }
 
 .title {
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: bold;
-    margin-top: calc(50px + 5vh);
-    margin-bottom: 20px;
+    margin-top: calc(3.125rem + 5vh);
+    margin-bottom: 2.5rem; 
     text-align: center;
 }
 
@@ -25,42 +27,44 @@
     align-items: center;
     width: 100%;
     margin-top: var(--section-margin-top);
+    max-height: 20%; 
+    overflow: hidden; 
 }
 
 .labelWrapper {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
     width: 90%;
-    max-width: 600px;
+    max-width: 37.5rem;
     position: relative;
 }
 
 .labelWrapper.start {
     justify-content: flex-start;
-    padding-left: 10px;
+    padding-left: 0.625rem;
 }
 
 .labelWrapper.end {
     justify-content: flex-end;
-    padding-right: 10px;
+    padding-right: 0.625rem;
 }
 
 .label {
     display: flex;
     align-items: center;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: bold;
 }
 
 .iconWrapper {
     color: rgba(155, 238, 142, 0.8);
-    font-size: 24px;
-    margin-right: 5px;
+    font-size: 1.5rem;
+    margin-right: 0.3125rem;
 }
 
 .iconWrapper.end {
-    margin-left: 5px;
+    margin-left: 0.3125rem;
     margin-right: 0;
 }
 
@@ -68,13 +72,13 @@
     display: flex;
     align-items: center;
     width: 90%;
-    max-width: 600px;
-    height: 50px;
+    max-width: 37.5rem;
+    height: 3.125rem;
     background-color: rgba(217, 217, 217, 0.4);
-    padding: 0 20px;
-    border-radius: 10px;
+    padding: 0 1.25rem;
+    border-radius: 0.625rem;
     cursor: pointer;
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
     text-align: left;
     box-sizing: border-box;
 }
@@ -82,7 +86,7 @@
 .searchInput {
     flex: 1;
     color: #000;
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 .searchIcon {
@@ -91,15 +95,15 @@
 
 .button {
     width: 85%;
-    max-width: 500px;
-    height: 50px;
+    max-width: 31.25rem;
+    height: 3.125rem;
     background-color: rgba(155, 238, 142, 0.8);
     border: none;
-    border-radius: 10px;
+    border-radius: 0.625rem;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: bold;
-    margin-top: 70px;
+    margin-top: 4.375rem;
     text-align: center;
     align-self: center;
 }
@@ -107,4 +111,19 @@
 .button:disabled {
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+@media (max-height: 700px) {
+    .title {
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .section {
+        max-height: 25%; 
+    }
+
+    .button {
+        margin-top: 2.5rem;
+    }
 }

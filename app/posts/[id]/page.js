@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+//import { useRouter } from 'next/navigation';
 import styles from './postDetail.module.css'; // 스타일 모듈
 import { loadKakaoMap, getAddressFromCoords } from '../../utils/kakao'; // 카카오 지도 관련 유틸
 

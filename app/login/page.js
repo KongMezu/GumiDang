@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import apiClient from '../utils/apiClient';
 import ImageButton from '../button/ImageButton';
-import styles from './Login.module.css'; // CSS 모듈을 가져옵니다
+import styles from './login.module.css'; // CSS 모듈을 가져옵니다. css 경로 수정
 
 const Login = () => {
   const [userName, setUsername] = useState('');

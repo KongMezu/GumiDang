@@ -1,6 +1,3 @@
-/*글 작성 페이지 디자인 수정 중 */
-/*글 작성 오류 발생-원인 잘 모르겠음,, */
-
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -10,7 +7,6 @@ import { loadKakaoMap, getAddressFromCoords } from '../utils/kakao'; // 카카�
 import styles from './write.module.css'; // CSS 모듈 import
 
 const WritePage = () => {
-    // 상태 변수들 정의
     const [title, setTitle] = useState(''); // 코스 제목
     const [content, setContent] = useState(''); // 코스 설명
     const [error, setError] = useState(null); // 에러 메시지
@@ -24,6 +20,7 @@ const WritePage = () => {
     const mapRef = useRef(null); // 맵 인스턴스 참조
     const markerRef = useRef(null); // 마커 인스턴스 참조
     const router = useRouter(); // Next.js 라우터
+    const [postId, setPostId] = useState(null); // 게시글 ID
 
     // 맵 초기화 및 마커 설정
     useEffect(() => {
@@ -88,7 +85,7 @@ const WritePage = () => {
         }
     }, [mapLoaded, activeField]);
 
-    // 위치 선택 버튼 클릭 시 처리
+    // 특정 위치 선택 버튼 클릭 시 처리
     const handleSelectLocation = async () => {
         if (mapRef.current) {
             const latLng = mapRef.current.getCenter(); // 맵 중심 좌표 가져오기
@@ -114,15 +111,8 @@ const WritePage = () => {
         }
     };
 
-    // 이미지 파일 변경 시 처리
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImageFile(file); // 이미지 파일 상태 업데이트
-            setImagePreview(URL.createObjectURL(file)); // 이미지 미리보기 업데이트
-        }
-    };
-
+    
+    
     // 폼 제출 처리
     const handleSubmit = async (e) => {
         e.preventDefault(); // 기본 제출 동작 방지
@@ -148,45 +138,70 @@ const WritePage = () => {
             return;
         }
 
-        // 폼 데이터 생성
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('description', content);
-        formData.append('imageUrl', imageFile); // 이미지 파일 추가
-        formData.append('postCoordinates', JSON.stringify(postCoordinates)); // 좌표값 리스트 추가
-
         const accessToken = localStorage.getItem('AccessToken'); // 로컬 스토리지에서 액세스 토큰 가져오기
 
+        // formData 객체 생성 및 데이터 추가 (이미지 URL 제외)
+        const creatingData = {
+            title: title,
+            description: content,
+            postCoordinates: postCoordinates,
+        };
+
         try {
-            // API 요청
-            const response = await axios.post('https://gummy-dang.com/api/post/create', formData, {
+            // 게시글 데이터 전송
+            const response = await axios.post('https://gummy-dang.com/api/post', creatingData, {
                 headers: {
-                    'Authorization': `Bearer ${accessToken}`, // 인증 헤더
-                    'Content-Type': 'multipart/form-data', // 멀티파트 데이터 전송
+                    'Authorization': accessToken, // 인증 헤더
                 },
             });
+            if (response.data.code === 'COM-000') {
+                const createdPostId = response.data.data.postId; // 생성된 게시글 ID 가져오기
+                setPostId(createdPostId);
+                await uploadImage(createdPostId); // Call the uploadImage function with the created post ID
+            } else {
+                setError('글 작성에 실패했습니다.'); // 실패 시 에러 메시지 설정
+            }
+        } catch (error) {
+            console.error('Error details:', error); // 자세한 에러 정보 출력
+            setError('서버 오류가 발생했습니다.');
+        }
+    };
+        //여기까지 성공
+        // 이미지 파일 변경 시 처리
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImageFile(file); // 이미지 파일 상태 업데이트
+            setImagePreview(URL.createObjectURL(file)); // 이미지 미리보기 업데이트
+        }
+    };
+    const uploadImage = async (postId) => {
+        const accessToken = localStorage.getItem('AccessToken'); // 로컬 스토리지에서 액세스 토큰 가져오기
+        console.log(accessToken);
+        // 이미지 업로드 후 URL 얻기
+        const formdata = new FormData();
+        formdata.append('file', imageFile); // 업로드할 이미지 파일 추가
+        try {
+            const response = await axios.post(`https://gummy-dang.com/api/image/post?postId=${postId}`, formdata, {
+                headers: {
+                    'Authorization': accessToken,
+                    'Content-Type': 'multipart/form-data', // 멀티파트 데이터 타입 설정
+                },
+            });
+            if (response.data.code === 'COM-000') {
+                // 성공 시 게시물 목록으로 이동
+                router.push('/posts');
+            } else {
+                setError('이미지 업로드에 실패했습니다.');
+                return null;
+            }
+        } catch (error) {
+            console.error('Error details:', error); // 자세한 에러 정보 출력
+            setError('서버 오류가 발생했습니다.');
+            return null;
+        }
+    };
 
-            // 성공 시 게시물 목록으로 이동
-        if (response.data.code === 'COM-000') {
-            router.push('/posts');
-        } else {
-            // 서버에서 반환하는 에러 코드와 메시지 확인
-            setError(`글 작성에 실패했습니다. 오류 코드: ${response.data.code}, 메시지: ${response.data.message || '알 수 없는 오류'}`);
-        }
-    } catch (error) {
-        // 네트워크 오류 또는 서버 응답 처리 오류
-        if (error.response) {
-            // 서버에서 응답이 있었고, 그 응답에 대한 정보를 확인
-            setError(`서버 오류 발생: ${error.response.data.message || '알 수 없는 서버 오류'}`);
-        } else if (error.request) {
-            // 요청이 서버에 도달하지 않은 경우
-            setError('서버에 요청을 보내지 못했습니다. 네트워크 문제를 확인하세요.');
-        } else {
-            // 오류를 발생시킨 코드
-            setError(`문제가 발생했습니다: ${error.message}`);
-        }
-    }
-};
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>산책코스 작성</h1>
@@ -286,21 +301,18 @@ const WritePage = () => {
                     </div>
                 </div>
                 <div className={styles.inputGroup}>
-                    <label className={styles.label}>사진</label>
+                    <label className={styles.label}>사진&ensp;&ensp;&ensp;  </label>
                     <input
-                        className={styles.imageInput}
                         type="file"
                         accept="image/*"
                         onChange={handleImageChange}
                     />
                     {imagePreview && (
-                        <div className={styles.imagePreviewContainer}>
-                            <img
-                                className={styles.imagePreview}
-                                src={imagePreview}
-                                alt="Image Preview"
-                            />
-                        </div>
+                        <img
+                            src={imagePreview}
+                            alt="미리보기"
+                            className={styles.imagePreview}
+                        />
                     )}
                 </div>
                 <div className={styles.inputGroup}>
@@ -314,7 +326,7 @@ const WritePage = () => {
                     />
                 </div>
                 <button type="submit" className={styles.submitButton}>작성 완료</button>
-                {error && <p className={styles.error}>{error}</p>}
+                {error && <div className={styles.error}>{error}</div>}
             </form>
         </div>
     );

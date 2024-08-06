@@ -9,7 +9,7 @@ export async function GET(req) {
     const response = await axios.post('https://kauth.kakao.com/oauth/token', null, {
       params: {
         grant_type: 'authorization_code',
-        client_id: '카카오 클라이언트 아이디',//.env 이용한 환경변수 처리
+        client_id: '카카오 클라이언트 아이디',
         redirect_uri: '카카오서버 인증 코드 엔드포인트 uri',
         code: code,
       },
@@ -22,7 +22,7 @@ export async function GET(req) {
       },
     });
 
-    const { email, id, properties } = userResponse.data.kakao_account;
+    const { email, id } = userResponse.data.kakao_account;
 
     // 백엔드에서 유저 정보 저장 및 토큰 발행 로직
     const jwtToken = generateJWT({ email, id });

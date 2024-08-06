@@ -1,89 +1,98 @@
-//아직 구현 중
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import { loadKakaoMap } from '../../../utils/kakao'; // 경로 조정 필요
-import styles from './postDetail.module.css'; // CSS 모듈 파일
+import styles from './postDetail.module.css'; // 스타일 모듈
+import { loadKakaoMap, getAddressFromCoords } from '../../utils/kakao'; // 카카오 지도 관련 유틸
 
-const PostDetail = () => {
+const PostDetail = ({ params }) => {
     const [post, setPost] = useState(null);
-    const [error, setError] = useState(null);
     const [map, setMap] = useState(null);
-    const router = useRouter();
-    const { id } = router.query;
+    const [address, setAddress] = useState('');
+    const [selectedMarker, setSelectedMarker] = useState(null);
+    const [kakao, setKakao] = useState(null);
+    const [nickname, setNickname] = useState(""); // 유저 닉네임 상태
 
     useEffect(() => {
-        if (id) {
-            const fetchPost = async () => {
-                try {
-                    const response = await axios.get(`/api/post/${id}`);
-                    if (response.data.code === 'COM-000') {
-                        setPost(response.data.data);
-                    } else {
-                        setError('해당 게시글을 찾을 수 없습니다.');
-                    }
-                } catch (error) {
-                    setError('서버 오류가 발생했습니다.');
+        const fetchPostDetails = async () => {
+            try {
+                const storedNickname = localStorage.getItem('Nickname'); // 로컬 스토리지 닉네임 수집
+                const accessToken = localStorage.getItem('AccessToken'); // 로컬 스토리지에서 액세스 토큰 가져오기
+
+                if (storedNickname) {
+                    setNickname(storedNickname); // 닉네임 상태 업데이트
                 }
-            };
 
-            fetchPost();
-        }
-    }, [id]);
-
-    useEffect(() => {
-        if (post) {
-            const initializeMap = async () => {
-                const kakao = await loadKakaoMap();
-                const mapContainer = document.getElementById('map');
-                const mapOption = {
-                    center: new kakao.maps.LatLng(post.postCoordinates[0].latitude, post.postCoordinates[0].longitude),
-                    level: 3,
-                };
-                const mapInstance = new kakao.maps.Map(mapContainer, mapOption);
-
-                post.postCoordinates.forEach(coord => {
-                    new kakao.maps.Marker({
-                        position: new kakao.maps.LatLng(coord.latitude, coord.longitude),
-                        map: mapInstance,
-                        title: `Marker at ${coord.latitude}, ${coord.longitude}`,
-                    });
+                const response = await axios.get(`https://gummy-dang.com/api/post/${params.id}`, {
+                    headers: {
+                        'Authorization': accessToken, // 인증 헤더 추가
+                    },
                 });
 
-                setMap(mapInstance);
-            };
+                if (response.data.code === 'COM-000') {
+                    setPost(response.data.data);
+                    if (response.data.data.postCoordinates.length > 0) {
+                        const kakao = await loadKakaoMap();
+                        setKakao(kakao);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to fetch post details:', error);
+            }
+        };
 
-            initializeMap();
+        fetchPostDetails();
+    }, [params.id]);
+
+    useEffect(() => {
+        if (kakao && post && post.postCoordinates.length > 0) {
+            const mapContainer = document.getElementById('map');
+            const mapOptions = {
+                center: new kakao.maps.LatLng(post.postCoordinates[0].latitude, post.postCoordinates[0].longitude),
+                level: 3,
+            };
+            const kakaoMap = new kakao.maps.Map(mapContainer, mapOptions);
+            setMap(kakaoMap);
+
+            post.postCoordinates.forEach((coords) => {
+                const position = new kakao.maps.LatLng(coords.latitude, coords.longitude);
+                const marker = new kakao.maps.Marker({ position });
+                marker.setMap(kakaoMap);
+                kakao.maps.event.addListener(marker, 'click', async () => {
+                    const addr = await getAddressFromCoords(position);
+                    setAddress(addr);
+                    setSelectedMarker(position);
+                });
+            });
+
+            const bounds = new kakao.maps.LatLngBounds();
+            post.postCoordinates.forEach((coords) => {
+                bounds.extend(new kakao.maps.LatLng(coords.latitude, coords.longitude));
+            });
+            kakaoMap.setBounds(bounds);
         }
-    }, [post]);
+    }, [kakao, post]);
 
     return (
         <div className={styles.container}>
-            <h1 className={styles.title}>산책구경</h1>
-            {post ? (
-                <div>
-                    <div className={styles.header}>
-                        <div className={styles.userInfo}>
-                            <span className={styles.username}></span>
-                            <span className={styles.date}>작성 날짜</span>
-                        </div>
-                        <h2 className={styles.postTitle}>{post.title}</h2>
-                    </div>
-                    <p className={styles.description}>{post.description}</p>
-                    <div id="map" className={styles.map}></div>
-                    {post.imageUrl && (
-                        <div className={styles.imageContainer}>
-                            <img src={post.imageUrl} alt="게시글 이미지" className={styles.postImage} />
-                        </div>
-                    )}
+            <h1 className={styles.title}>{post ? post.title : '로딩 중...'}</h1>
+            <div className={styles.info}>
+                <div className={styles.username}>{nickname}</div>
+                <div className={styles.date}>{post ? new Date(post.createdAt).toLocaleDateString() : '작성 날짜'}</div>
+            </div>
+            <div className={styles.separator}></div>
+            <div className={styles.postTitle}>{post ? post.title : ''}</div>
+            <div className={styles.descriptionContainer}>
+                <img src="/image/pencil.PNG" alt="Edit" className={styles.icon} />
+                <div className={styles.description}>{post ? post.description : ''}</div>
+            </div>
+            <div className={styles.mapAndImageContainer}>
+                <div id="map" className={styles.map}></div>
+                <div className={styles.imageSlider}>
+                    <img src={post ? post.imageUrl : '/image/default.png'} alt="Post Image" className={styles.image} />
                 </div>
-            ) : (
-                <p className={styles.error}>불러오는 중...</p>
-            )}
-            {error && <p className={styles.error}>{error}</p>}
+            </div>
+            {address && <div className={styles.address}>{address}</div>}
         </div>
     );
 };

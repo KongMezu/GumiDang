@@ -1,236 +1,212 @@
-/*글 작성 페이지 css*/
-
-
-/* Pretendard-Regular 폰트를 정의 */
+/* Pretendard-Regular 폰트 정의 */
 @font-face {
-    font-family: 'Pretendard-Regular'; /* 폰트 이름 */
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff'); /* 폰트 파일의 URL과 포맷 */
-    font-weight: 400; /* 기본 폰트 두께 */
-    font-style: normal; /* 기본 폰트 스타일 */
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
 }
 
-/* 전체 레이아웃을 중앙 정렬로 설정 */
+/* 전체 레이아웃 중앙 정렬 */
 .container {
-    display: flex; /* flexbox 레이아웃 사용 */
-    flex-direction: column; /* 세로 방향으로 배치 */
-    align-items: center; /* 수평 중앙 정렬 */
-    font-family: 'Pretendard-Regular'; /* 폰트 지정 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Pretendard-Regular';
 }
 
 /* 제목 스타일 */
 .title {
-    font-size: 24px; /* 글자 크기 */
-    font-weight: bold; /* 글자 두께 */
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px; /* 제목과 폼 간격 추가 */
 }
 
 /* 폼 스타일 */
 .form {
-    width: 100%; /* 너비를 부모 요소에 맞게 설정 */
-    max-width: 300px; /* 최대 너비 300px로 설정 */
-    display: flex; /* flexbox 레이아웃 사용 */
-    flex-direction: column; /* 세로 방향으로 배치 */
-    align-items: center; /* 수평 중앙 정렬 */
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* 입력 그룹 스타일 */
 .inputGroup {
-    width: 100%; /* 너비를 부모 요소에 맞게 설정 */
-    margin-bottom: 20px; /* 하단 여백 20px */
+    width: 100%;
+    margin-bottom: 20px;
 }
 
-/* 마지막 입력 그룹을 제외한 모든 입력 그룹 사이에 하단 여백 추가 */
+/* 마지막 입력 그룹을 제외한 하단 여백 추가 */
 .inputGroup:not(:last-child) {
-    margin-bottom: 10px; /* 하단 여백 10px */
+    margin-bottom: 10px;
 }
 
 /* 레이블 스타일 */
 .label {
-    font-size: 16px; /* 글자 크기 */
-    font-weight: bold; /* 글자 두께 */
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px; /* 레이블과 입력 필드 간격 추가 */
 }
 
 /* 서브 레이블 스타일 */
 .subLabel {
-    font-size: 14px; /* 글자 크기 */
-    font-weight: 300; /* 글자 두께 */
-    color: #4D4D4D; /* 글자 색상 */
+    font-size: 14px;
+    font-weight: 300;
+    color: #4D4D4D;
 }
 
 /* 입력 필드 스타일 */
-.input {
-    width: 296px; /* 너비 설정 */
-    height: 46px; /* 높이 설정 */
-    background-color: rgba(217, 217, 217, 0.5); /* 배경색과 투명도 50% */
-    border: none; /* 테두리 없음 */
-    border-radius: 40px; /* 둥근 모서리 */
-    padding: 0 20px; /* 좌우 패딩 20px */
-    font-size: 14px; /* 글자 크기 */
-    font-weight: 300; /* 글자 두께 */
-    color: #4D4D4D; /* 글자 색상 */
-    margin-top: 5px; /* 상단 여백 5px */
-    font-family: 'Pretendard-Regular'; /* 폰트 지정 */
+.input,
+.locationInputField {
+    width: 296px;
+    height: 46px;
+    background-color: rgba(217, 217, 217, 0.5);
+    border: none;
+    border-radius: 40px;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 300;
+    color: #4D4D4D;
+    margin-top: 5px;
+    font-family: 'Pretendard-Regular';
 }
 
 /* 입력 필드의 placeholder 스타일 */
-.input::placeholder {
-    color: #4D4D4D; /* placeholder 글자 색상 */
-    font-family: 'Pretendard-Regular'; /* 폰트 지정 */
+.input::placeholder,
+.locationInputField::placeholder {
+    color: #4D4D4D;
+    font-family: 'Pretendard-Regular';
 }
 
 /* 위치 입력 그룹 스타일 */
 .locationInputGroup {
-    position: relative; /* 상대 위치 설정 */
-    width: 100%; /* 너비를 부모 요소에 맞게 설정 */
-}
-
-/* 위치 입력 필드 스타일 */
-.locationInput {
-    width: 316px; /* 너비 설정 */
-    margin-bottom: 10px; /* 하단 여백 10px */
-}
-
-/* 위치 입력 필드 스타일 */
-.locationInputField {
-    width: 296px; /* 너비 설정 */
-    height: 46px; /* 높이 설정 */
-    background-color: rgba(217, 217, 217, 0.5); /* 배경색과 투명도 50% */
-    border: none; /* 테두리 없음 */
-    border-radius: 40px; /* 둥근 모서리 */
-    padding: 0 20px; /* 좌우 패딩 20px */
-    font-size: 16px; /* 글자 크기 */
-    font-weight: 300; /* 글자 두께 */
-    color: #4D4D4D; /* 글자 색상 */
-    font-family: 'Pretendard-Regular'; /* 폰트 지정 */
-}
-
-/* 위치 입력 필드의 placeholder 스타일 */
-.locationInputField::placeholder {
-    color: #4D4D4D; /* placeholder 글자 색상 */
-    font-family: 'Pretendard-Regular'; /* 폰트 지정 */
+    position: relative;
+    width: 100%;
 }
 
 /* 지도 컨테이너 스타일 */
 .mapContainer {
-    margin-top: 10px; /* 상단 여백 10px */
-    width: 100%; /* 너비를 부모 요소에 맞게 설정 */
-    display: flex; /* flexbox 레이아웃 사용 */
-    justify-content: center; /* 수평 중앙 정렬 */
-    position: relative; /* 상대 위치 설정 */
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: relative;
 }
 
 /* 지도 스타일 */
 .map {
-    width: 300px; /* 너비 설정 */
-    height: 300px; /* 높이 설정 */
+    width: 300px;
+    height: 300px;
+    margin-bottom:50px ;
 }
 
 /* 선택 버튼 스타일 */
 .selectButton {
-    position: fixed; /* 고정 위치 설정 */
-    bottom: 10px; /* 하단에서 10px 위치 */
-    right: 10px; /* 오른쪽에서 10px 위치 */
-    background-color: rgba(155, 238, 142, 0.5); /* 배경색과 투명도 50% */
-    border: none; /* 테두리 없음 */
-    border-radius: 10px; /* 둥근 모서리 */
-    padding: 10px 20px; /* 상하 패딩 10px, 좌우 패딩 20px */
-    font-size: 14px; /* 글자 크기 */
-    font-weight: bold; /* 글자 두께 */
-    color: #fff; /* 글자 색상 */
-    cursor: pointer; /* 커서 포인터로 변경 */
+    position: absolute; /* 고정 위치로 변경 */
+    bottom: 0px; /* 지도 바깥에 위치하도록 설정 */
+    right: 10px;
+    background-color: rgba(155, 238, 142, 0.5);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
 }
 
 /* 경로 추가 버튼 스타일 */
 .addWaypointButton {
-    font-size: 16px; /* 글자 크기 */
-    font-weight: bold; /* 글자 두께 */
-    background: transparent; /* 배경 투명 */
-    border: none; /* 테두리 없음 */
-    color: rgba(0, 0, 0, 0.5); /* 글자 색상과 투명도 50% */
-    cursor: pointer; /* 커서 포인터로 변경 */
-    margin-top: 10px; /* 상단 여백 10px */
+    font-size: 16px;
+    font-weight: bold;
+    background: transparent;
+    border: none;
+    color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    margin-top: 10px;
 }
 
 /* 경로 추가 버튼 컨테이너 스타일 */
 .addWaypointButtonContainer {
-    width: 100%; /* 너비를 부모 요소에 맞게 설정 */
-    display: flex; /* flexbox 레이아웃 사용 */
-    justify-content: flex-end; /* 오른쪽 정렬 */
-    margin-top: 10px; /* 상단 여백 10px */
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
 }
 
 /* 이미지 입력 필드 스타일 */
 .imageInput {
-    width: 316px; /* 너비 설정 */
-    height: 100px; /* 높이 설정 */
-    background-color: rgba(217, 217, 217, 0.5); /* 배경색과 투명도 50% */
-    border: none; /* 테두리 없음 */
-    border-radius: 40px; /* 둥근 모서리 */
-    padding: 0; /* 패딩 없음 */
-    position: relative; /* 상대 위치 설정 */
-    display: flex; /* flexbox 레이아웃 사용 */
-    justify-content: center; /* 수평 중앙 정렬 */
-    align-items: center; /* 수직 중앙 정렬 */
-    cursor: pointer; /* 커서 포인터로 변경 */
+    width: 316px;
+    height: 100px;
+    background-color: rgba(217, 217, 217, 0.5);
+    border: none;
+    border-radius: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 
 /* 이미지 입력 필드에 '+' 표시 추가 */
 .imageInput::before {
-    content: '+'; /* 표시할 내용 */
-    font-size: 28px; /* 글자 크기 */
-    color: white; /* 글자 색상 */
+    content: '+';
+    font-size: 28px;
+    color: white;
 }
 
 /* 이미지 미리보기 컨테이너 스타일 */
 .imagePreviewContainer {
-    margin-top: 10px; /* 상단 여백 10px */
+    margin-top: 10px;
 }
 
 /* 이미지 미리보기 스타일 */
 .imagePreview {
-    width: 100%; /* 너비를 부모 요소에 맞게 설정 */
-    max-width: 300px; /* 최대 너비 300px로 설정 */
-    height: auto; /* 자동 높이 조정 */
-    border-radius: 40px; /* 둥근 모서리 */
-    object-fit: cover; /* 이미지 크기 조절 방식 */
+    width: 100%;
+    width: 300px;
+    height: 300px;
+    border-radius: 40px;
+    object-fit: cover;
 }
 
 /* 텍스트 영역 스타일 */
 .textarea {
-    width: 296px; /* 너비 설정 */
-    height: 155px; /* 높이 설정 */
-    background-color: rgba(217, 217, 217, 0.5); /* 배경색과 투명도 50% */
-    border: none; /* 테두리 없음 */
-    border-radius: 40px; /* 둥근 모서리 */
-    padding: 20px; /* 패딩 20px */
-    font-size: 16px; /* 글자 크기 */
-    font-weight: 300; /* 글자 두께 */
-    color: #4D4D4D; /* 글자 색상 */
-    resize: none; /* 크기 조절 불가 */
-    font-family: 'Pretendard-Regular'; /* 폰트 지정 */
+    width: 296px;
+    height: 155px;
+    background-color: rgba(217, 217, 217, 0.5);
+    border: none;
+    border-radius: 40px;
+    padding: 20px;
+    font-size: 16px;
+    font-weight: 300;
+    color: #4D4D4D;
+    resize: none;
+    font-family: 'Pretendard-Regular';
 }
 
 /* 텍스트 영역의 placeholder 스타일 */
 .textarea::placeholder {
-    color: #4D4D4D; /* placeholder 글자 색상 */
-    font-family: 'Pretendard-Regular'; /* 폰트 지정 */
+    color: #4D4D4D;
+    font-family: 'Pretendard-Regular';
 }
 
 /* 제출 버튼 스타일 */
 .submitButton {
-    width: 241px; /* 너비 설정 */
-    height: 60px; /* 높이 설정 */
-    background-color: rgba(155, 238, 142, 0.6); /* 배경색과 투명도 60% */
-    border: none; /* 테두리 없음 */
-    border-radius: 60px; /* 둥근 모서리 */
-    font-size: 16px; /* 글자 크기 */
-    font-weight: bold; /* 글자 두께 */
-    color: #fff; /* 글자 색상 */
-    cursor: pointer; /* 커서 포인터로 변경 */
-    align-items: center; /* 중앙 정렬 */
+    width: 241px;
+    height: 60px;
+    background-color: rgba(155, 238, 142, 0.6);
+    border: none;
+    border-radius: 60px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 중앙 정렬 */
 }
 
 /* 에러 메시지 스타일 */
 .error {
-    color: red; /* 글자 색상 */
-    margin-top: 10px; /* 상단 여백 10px */
+    color: red;
+    margin-top: 10px;
 }

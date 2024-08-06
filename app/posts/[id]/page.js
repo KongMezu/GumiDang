@@ -5,7 +5,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { loadKakaoMap } from '../../../utils/kakao'; // 경로 조정 필요
+import { loadKakaoMap } from '../../utils/kakao'; // 경로 조정 필요
 import styles from './postDetail.module.css'; // CSS 모듈 파일
 
 const PostDetail = () => {

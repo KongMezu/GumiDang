@@ -1,25 +1,62 @@
+/* 폰트 설정 */
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
 .container {
     padding: 20px;
+    text-align: center; /* 가운데 정렬 */
+    font-family: 'Pretendard-Regular', sans-serif;
+    position: relative; /* 버튼 위치 설정을 위해 필요 */
+}
+
+.writeButton {
+    position: fixed; /* 스크롤해도 고정된 위치 */
+    left: 50%; /* 페이지 가운데 */
+    transform: translateX(100px); /* 가운데에서 오른쪽으로 130px 이동 */
+    bottom: 50px; /* bottom에서 50px 위에 위치 */
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: rgba(155, 238, 142, 0.4); /* 색상 및 투명도 */
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 */
+    color: white;
+    font-size: 40px;
+    line-height: 40px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 1000; /* 게시물 목록보다 위에 위치하도록 설정 */
+}
+
+.writeButton:hover {
+    background-color: rgba(155, 238, 142, 0.6); /* 호버 시 색상 변화 */
 }
 
 .title {
     font-size: 24px;
+    font-weight: bold; /* Bold */
     margin-bottom: 20px;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(2, 150px); /* 두 줄 정렬 */
+    gap: 15px 7px; /* 게시물 간의 좌우 간격 7px, 상하 간격 15px로 설정 */
+    justify-content: center; /* 게시물들을 가운데 정렬 */
+    margin: 0 auto; /* 그리드 컨테이너를 가운데 정렬 */
 }
 
 .post {
     cursor: pointer;
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    border: 1px solid transparent; /* 테두리 투명 */
+    width: 150px; /* 게시물 영역 너비 */
+    height: 199px; /* 게시물 영역 높이 */
+    text-align: left; /* 제목을 왼쪽 정렬 */
+    position: relative; /* 제목을 이미지 왼쪽 아래에 배치하기 위해 필요 */
 }
 
 .post:hover {
@@ -27,13 +64,19 @@
 }
 
 .image {
-    max-width: 100%;
-    height: auto;
+    width: 150px;
+    height: 150px;
+    object-fit: cover; /* 이미지 크기 조정 */
+    border-radius: 16px; /* 이미지 곡률 */
 }
 
-.title {
-    font-size: 18px;
-    margin-top: 10px;
+.postTitle {
+    font-size: 16px;
+    font-weight: 800; /* ExtraBold */
+    position: absolute; /* 제목을 이미지 왼쪽 아래에 배치 */
+    bottom: 10px; /* 이미지 아래로부터 10px 간격 */
+    left: 10px; /* 이미지 왼쪽으로부터 10px 간격 */
+    margin: 0; /* 기본 마진 제거 */
 }
 
 .error {

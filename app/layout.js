@@ -1,3 +1,4 @@
+/*햄버거 메뉴 레이아웃 렌더링 */ 
 import Layout from './menu/Layout'; //햄버거메뉴 랜더링
 
 export const metadata = {

@@ -19,7 +19,7 @@ const InputPage = () => {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const recordDateFromQuery = urlParams.get('recordDate');
-        console.log(`Received recordDate: ${recordDateFromQuery}`); // Debugging line
+        console.log(`Received recordDate: ${recordDateFromQuery}`);
 
         if (recordDateFromQuery) {
             setRecordDate(recordDateFromQuery);

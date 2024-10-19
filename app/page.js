@@ -1,17 +1,10 @@
-/*온보딩
-
-해야할거
-:
-1) Take a walk.Take a gummy! - 폰트 변경
-2) CSS 값 px -> rem or vw,vh 중 하나 
-
-*/
+/* 온보딩 페이지 */
 "use client";
-
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
+import './globals.css';
 
 const Onboarding = () => {
   const router = useRouter();
@@ -22,7 +15,7 @@ const Onboarding = () => {
   useEffect(() => {
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
     setColor(randomColor);
-  }, []);
+  }, [colors]);
 
   const handleTouch = () => {
     router.push('/write');

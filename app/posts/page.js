@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import styles from './posts.module.css'; // CSS 모듈 파일
+import styles from './posts.module.css'; 
+import Image from 'next/image';
 
 const PostsList = () => {
     const [posts, setPosts] = useState([]);
@@ -48,7 +49,7 @@ const PostsList = () => {
             <div className={styles.grid}>
                 {posts.map((post) => (
                     <div key={post.id} className={styles.post} onClick={() => handlePostClick(post.postId)}>
-                        {post.imageUrl && <img src={post.imageUrl} alt={post.title} className={styles.image} />}
+                        {post.imageUrl && <Image src={post.imageUrl} alt={post.title} className={styles.image} />}
                         <h2 className={styles.postTitle}>{post.title}</h2>
                     </div>
                 ))}

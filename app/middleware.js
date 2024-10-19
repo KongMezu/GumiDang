@@ -1,3 +1,4 @@
+/* 뭘까 이건 */
 /*로그인 상태 확인 및 로그인 상태에서 로그인 페이지 접속 시 나의 산책 페이지 리다이렉트 */
 
 import { NextResponse } from 'next/server';

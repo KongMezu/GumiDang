@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { loadKakaoMap, getAddressFromCoords } from '../utils/kakao'; // 카카오 맵 API 관련 유틸 함수들 import
 import styles from './write.module.css'; // CSS 모듈 import
+import Image from 'next/image';
+
 
 const WritePage = () => {
     const [title, setTitle] = useState(''); // 코스 제목
@@ -308,7 +310,7 @@ const WritePage = () => {
                         onChange={handleImageChange}
                     />
                     {imagePreview && (
-                        <img
+                        <Image
                             src={imagePreview}
                             alt="미리보기"
                             className={styles.imagePreview}

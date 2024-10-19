@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
 import styles from './mygumi_login.module.css';
-import { loadKakaoMap } from "../utils/kakao"
+import { loadKakaoMap } from "../utils/kakao";
+import Image from 'next/image';
 
 const MyGumiLogin = () => {
     const router = useRouter();
-    const searchParams = useSearchParams();
     const [showDetail, setShowDetail] = useState(false);
     const [gumiList, setGumiList] = useState([]);
     const [rewardAvailable, setRewardAvailable] = useState(false);
@@ -18,16 +18,21 @@ const MyGumiLogin = () => {
     const [selectedGumi, setSelectedGumi] = useState(null);
     const [isDropping, setIsDropping] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
-    
+    const [searchParams, setSearchParams] = useState(null);
 
     useEffect(() => {
-        fetchGumiData();
+        if (typeof window !== 'undefined') {
+            setSearchParams(new URLSearchParams(window.location.search));
+            fetchGumiData();
+        }
     }, []);
 
     useEffect(() => {
-        const id = searchParams.get('walkRecordId');
-        if (id) {
-            fetchGumiDetail(id);
+        if (searchParams) {
+            const id = searchParams.get('walkRecordId');
+            if (id) {
+                fetchGumiDetail(id);
+            }
         }
     }, [searchParams]);
 
@@ -46,9 +51,6 @@ const MyGumiLogin = () => {
             }));
             setGumiList(validGumiList);
 
-            console.log("gumi list:", gumiList);
-            console.log("valid gumi list:", validGumiList);
-
             const totalDistance = validGumiList.reduce((acc, record) => acc + (record.distance || 0), 0);
             setTotalDistance(totalDistance);
 
@@ -59,7 +61,6 @@ const MyGumiLogin = () => {
             }
         } catch (error) {
             console.error('Error fetching gumi data:', error);
-
             setTotalDistance(0);
         }
     };
@@ -261,23 +262,21 @@ const MyGumiLogin = () => {
             </div>
             <div className={styles.content}>
                 <div className={styles.gumiBox}>
-                <div className={styles.gumiGrid}>
-                    {gumiList.length > 0 && gumiList.map((gumi) => {
-                        console.log("render", gumi.gummyUrl);
-                    return (  // 'return'을 추가
-                        <div
-                            key={gumi.walkRecordId}
-                            className={`${styles.gumi} ${draggingGumi === gumi ? styles.draggingGumi : ''}`}
-                            style={{ backgroundImage: `url('${gumi.gummyUrl}')` }}
-                            onClick={() => handleGumiClick(gumi)}
-                            draggable
-                            onDragStart={() => handleDragStart(gumi)}
-                            onDragEnd={handleDragEnd}
-                            ></div>
-                        );
-                    })}
-                </div>
-
+                    <div className={styles.gumiGrid}>
+                        {gumiList.length > 0 && gumiList.map((gumi) => {
+                            return (
+                                <div
+                                    key={gumi.walkRecordId}
+                                    className={`${styles.gumi} ${draggingGumi === gumi ? styles.draggingGumi : ''}`}
+                                    style={{ backgroundImage: `url('${gumi.gummyUrl}')` }}
+                                    onClick={() => handleGumiClick(gumi)}
+                                    draggable
+                                    onDragStart={() => handleDragStart(gumi)}
+                                    onDragEnd={handleDragEnd}
+                                ></div>
+                            );
+                        })}
+                    </div>
                     <div className={styles.rollupJelly}>
                         총 거리: {totalDistance} m
                         {rewardAvailable && (
@@ -313,7 +312,7 @@ const MyGumiLogin = () => {
                             </p>
                             <div className={styles.detailImage} onClick={() => document.getElementById('imageUpload').click()}>
                                 {selectedGumi.imageUrl ? (
-                                    <img src={selectedGumi.imageUrl} alt="Uploaded" />
+                                    <Image src={selectedGumi.imageUrl} alt="Uploaded" />
                                 ) : (
                                     '(사진)'
                                 )}
@@ -325,7 +324,7 @@ const MyGumiLogin = () => {
                                 onChange={handleImageUpload}
                             />
                             <div className={styles.detailRollupJelly}>
-                                <img src={getJellyImage(selectedGumi.distance)} alt="Rollup Jelly" className={styles.jellyImage} />
+                                <Image src={getJellyImage(selectedGumi.distance)} alt="Rollup Jelly" className={styles.jellyImage} />
                             </div>
                         </div>
                     </div>

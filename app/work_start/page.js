@@ -2,21 +2,28 @@
 
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaMapMarkerAlt, FaArrowLeft } from "react-icons/fa";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import styles from "./start.module.css";
 import { loadKakaoMap } from "../utils/kakao";
 
 const StartPage = () => {
     const router = useRouter();
-    const searchParams = useSearchParams();
     const [query, setQuery] = useState("");
     const [locations, setLocations] = useState([]);
-
-    const recordDate = searchParams.get('recordDate');
+    const [recordDate, setRecordDate] = useState(null);
 
     useEffect(() => {
-        const handleSearch = async () => {
-            if (query.length > 0) {
+        // 클라이언트 사이드에서만 searchParams를 가져오도록 처리
+        if (typeof window !== 'undefined') {
+            const urlParams = new URLSearchParams(window.location.search);
+            const recordDateParam = urlParams.get('recordDate');
+            setRecordDate(recordDateParam);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (query.length > 0) {
+            const handleSearch = async () => {
                 const kakao = await loadKakaoMap();
                 const ps = new kakao.maps.services.Places();
                 ps.keywordSearch(query, (data, status) => {
@@ -24,15 +31,15 @@ const StartPage = () => {
                         setLocations(data.slice(0, 7)); 
                     }
                 });
-            } else {
-                setLocations([]);
-            }
-        };
+            };
 
-        handleSearch();
+            handleSearch();
+        } else {
+            setLocations([]);
+        }
     }, [query]);
 
-    const handleLocationClick = async (location) => {
+    const handleLocationClick = (location) => {
         const params = new URLSearchParams({
             startLocation: location.place_name,
             startLat: location.y,

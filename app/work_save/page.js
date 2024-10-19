@@ -5,8 +5,15 @@ import { useRouter } from 'next/navigation';
 import { FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
 import styles from './work_save.module.css';
+import Image from 'next/image';
+
+//import dynamic from 'next/dynamic';
+// import ModalReviewAddPath from './ModalReviewAddPath';
+
+
 
 const WorkSavePage = () => {
+
     const [userName, setUserName] = useState('');
     const [date, setDate] = useState({ month: '', day: '' });
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -14,12 +21,12 @@ const WorkSavePage = () => {
     const [distance, setDistance] = useState(0);
     const router = useRouter();
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const startLat = parseFloat(urlParams.get('startLat'));
-    const startLon = parseFloat(urlParams.get('startLon'));
-    const endLat = parseFloat(urlParams.get('endLat'));
-    const endLon = parseFloat(urlParams.get('endLon'));
-    const recordDate = urlParams.get('recordDate');
+    const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const startLat = urlParams ? parseFloat(urlParams.get('startLat')) : 0;
+    const startLon = urlParams ? parseFloat(urlParams.get('startLon')) : 0;
+    const endLat = urlParams ? parseFloat(urlParams.get('endLat')) : 0;
+    const endLon = urlParams ? parseFloat(urlParams.get('endLon')) : 0;
+    const recordDate = urlParams ? urlParams.get('recordDate') : '';
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,70 +70,72 @@ const WorkSavePage = () => {
     }, [recordDate]);
 
     useEffect(() => {
-        const script = document.createElement('script');
-        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=d3745faf495bcce30edb681fb85a6b3b&autoload=false`;
-        script.async = true;
-        document.head.appendChild(script);
+        if (typeof window !== "undefined") {
+            const script = document.createElement('script');
+            script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=d3745faf495bcce30edb681fb85a6b3b&autoload=false`;
+            script.async = true;
+            document.head.appendChild(script);
 
-        script.onload = () => {
-            window.kakao.maps.load(() => {
-                const mapContainer = document.getElementById('map');
-                const mapOption = {
-                    center: new window.kakao.maps.LatLng(startLat, startLon),
-                    level: 3,
-                };
-                const map = new window.kakao.maps.Map(mapContainer, mapOption);
+            script.onload = () => {
+                window.kakao.maps.load(() => {
+                    const mapContainer = document.getElementById('map');
+                    const mapOption = {
+                        center: new window.kakao.maps.LatLng(startLat, startLon),
+                        level: 3,
+                    };
+                    const map = new window.kakao.maps.Map(mapContainer, mapOption);
 
-                const startMarker = new window.kakao.maps.Marker({
-                    position: new window.kakao.maps.LatLng(startLat, startLon),
-                    map: map,
-                    title: 'Start Point'
+                    const startMarker = new window.kakao.maps.Marker({
+                        position: new window.kakao.maps.LatLng(startLat, startLon),
+                        map: map,
+                        title: 'Start Point'
+                    });
+
+                    const endMarker = new window.kakao.maps.Marker({
+                        position: new window.kakao.maps.LatLng(endLat, endLon),
+                        map: map,
+                        title: 'End Point'
+                    });
+
+                    const linePath = [
+                        new window.kakao.maps.LatLng(startLat, startLon),
+                        new window.kakao.maps.LatLng(endLat, endLon)
+                    ];
+
+                    const polyline = new window.kakao.maps.Polyline({
+                        path: linePath,
+                        strokeWeight: 5,
+                        strokeColor: '#FFAE00',
+                        strokeOpacity: 0.7,
+                        strokeStyle: 'solid'
+                    });
+
+                    polyline.setMap(map);
+
+                    const bounds = new window.kakao.maps.LatLngBounds();
+                    bounds.extend(new window.kakao.maps.LatLng(startLat, startLon));
+                    bounds.extend(new window.kakao.maps.LatLng(endLat, endLon));
+                    map.setBounds(bounds);
+
+                    const toRad = (value) => value * Math.PI / 180;
+                    const R = 6371e3; // metres
+                    const φ1 = toRad(startLat);
+                    const φ2 = toRad(endLat);
+                    const Δφ = toRad(endLat - startLat);
+                    const Δλ = toRad(endLon - startLon);
+
+                    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                              Math.cos(φ1) * Math.cos(φ2) *
+                              Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+                    const d = R * c; // in metres
+                    setDistance(d);
                 });
+            };
 
-                const endMarker = new window.kakao.maps.Marker({
-                    position: new window.kakao.maps.LatLng(endLat, endLon),
-                    map: map,
-                    title: 'End Point'
-                });
-
-                const linePath = [
-                    new window.kakao.maps.LatLng(startLat, startLon),
-                    new window.kakao.maps.LatLng(endLat, endLon)
-                ];
-
-                const polyline = new window.kakao.maps.Polyline({
-                    path: linePath,
-                    strokeWeight: 5,
-                    strokeColor: '#FFAE00',
-                    strokeOpacity: 0.7,
-                    strokeStyle: 'solid'
-                });
-
-                polyline.setMap(map);
-
-                const bounds = new window.kakao.maps.LatLngBounds();
-                bounds.extend(new window.kakao.maps.LatLng(startLat, startLon));
-                bounds.extend(new window.kakao.maps.LatLng(endLat, endLon));
-                map.setBounds(bounds);
-
-                const toRad = (value) => value * Math.PI / 180;
-                const R = 6371e3; // metres
-                const φ1 = toRad(startLat);
-                const φ2 = toRad(endLat);
-                const Δφ = toRad(endLat - startLat);
-                const Δλ = toRad(endLon - startLon);
-
-                const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-                          Math.cos(φ1) * Math.cos(φ2) *
-                          Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-                const d = R * c; // in metres
-                setDistance(d);
-            });
-        };
-
-        return () => script.remove();
+            return () => script.remove();
+        }
     }, [startLat, startLon, endLat, endLon]);
 
     const handleBack = () => {
@@ -186,7 +195,7 @@ const WorkSavePage = () => {
                 <h1 className={styles.title}>{`${date.month}월 ${date.day}일 ${userName}님은 이만큼 걸었어요!`}</h1>
                 <div id="map" className={styles.map}></div>
                 <div className={styles.rollupJelly}>
-                    <img src={getRollupJellyImage(distance)} alt="롤업젤리" />
+                    <Image src={getRollupJellyImage(distance)} alt="롤업젤리" />
                 </div>
                 <button onClick={handleSave} className={styles.saveButton}>오늘의 구미 저장하기</button>
             </div>

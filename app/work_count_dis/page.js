@@ -1,51 +1,69 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { FaArrowLeft } from 'react-icons/fa';
 import styles from './count_dis.module.css';
 
 const CountDisPage = () => {
     const router = useRouter();
-    const searchParams = useSearchParams();
+    const [startLat, setStartLat] = useState(null);
+    const [startLon, setStartLon] = useState(null);
+    const [endLat, setEndLat] = useState(null);
+    const [endLon, setEndLon] = useState(null);
+    const [recordDate, setRecordDate] = useState(null);
 
-    const startLat = parseFloat(searchParams.get('startLat'));
-    const startLon = parseFloat(searchParams.get('startLon'));
-    const endLat = parseFloat(searchParams.get('endLat'));
-    const endLon = parseFloat(searchParams.get('endLon'));
-    const recordDate = searchParams.get('recordDate');
+    // 클라이언트 사이드에서만 실행되는 코드로 수정
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const startLatParam = parseFloat(params.get('startLat'));
+            const startLonParam = parseFloat(params.get('startLon'));
+            const endLatParam = parseFloat(params.get('endLat'));
+            const endLonParam = parseFloat(params.get('endLon'));
+            const recordDateParam = params.get('recordDate');
+
+            setStartLat(startLatParam);
+            setStartLon(startLonParam);
+            setEndLat(endLatParam);
+            setEndLon(endLonParam);
+            setRecordDate(recordDateParam);
+        }
+    }, []); // 빈 배열을 사용하여 처음 한 번만 실행되도록
 
     useEffect(() => {
-        const handleMeasureDistance = () => {
-            const toRad = (value) => value * Math.PI / 180;
-            const R = 6371e3; 
-            const φ1 = toRad(startLat);
-            const φ2 = toRad(endLat);
-            const Δφ = toRad(endLat - startLat);
-            const Δλ = toRad(endLon - startLon);
+        if (startLat && startLon && endLat && endLon) {
+            const handleMeasureDistance = () => {
+                const toRad = (value) => value * Math.PI / 180;
+                const R = 6371e3; // 지구 반경 (미터 단위)
+                const φ1 = toRad(startLat);
+                const φ2 = toRad(endLat);
+                const Δφ = toRad(endLat - startLat);
+                const Δλ = toRad(endLon - startLon);
 
-            const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-                Math.cos(φ1) * Math.cos(φ2) *
-                Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                    Math.cos(φ1) * Math.cos(φ2) *
+                    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-            const calculatedDistance = R * c;
+                const calculatedDistance = R * c;
 
-            const params = new URLSearchParams({
-                startLat: startLat.toString(),
-                startLon: startLon.toString(),
-                endLat: endLat.toString(),
-                endLon: endLon.toString(),
-                distance: calculatedDistance.toString(),
-                recordDate,
-            });
+                const params = new URLSearchParams({
+                    startLat: startLat.toString(),
+                    startLon: startLon.toString(),
+                    endLat: endLat.toString(),
+                    endLon: endLon.toString(),
+                    distance: calculatedDistance.toString(),
+                    recordDate,
+                });
 
-            setTimeout(() => {
-                router.push(`/work_save?${params.toString()}`);
-            }, 3000);
-        };
+                setTimeout(() => {
+                    router.push(`/work_save?${params.toString()}`);
+                }, 3000);
+            };
 
-        handleMeasureDistance();
+            handleMeasureDistance();
+        }
     }, [startLat, startLon, endLat, endLon, recordDate, router]);
 
     const handleBack = () => {

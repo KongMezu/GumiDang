@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from './postDetail.module.css'; // 스타일 모듈
 import { loadKakaoMap, getAddressFromCoords } from '../../utils/kakao'; // 카카오 지도 관련 유틸
+import Image from 'next/image';
 
 const PostDetail = ({ params }) => {
     const [post, setPost] = useState(null);
@@ -83,13 +84,13 @@ const PostDetail = ({ params }) => {
             <div className={styles.separator}></div>
             <div className={styles.postTitle}>{post ? post.title : ''}</div>
             <div className={styles.descriptionContainer}>
-                <img src="/image/pencil.PNG" alt="Edit" className={styles.icon} />
+                <Image src="/image/pencil.PNG" alt="Edit" className={styles.icon} />
                 <div className={styles.description}>{post ? post.description : ''}</div>
             </div>
             <div className={styles.mapAndImageContainer}>
                 <div id="map" className={styles.map}></div>
                 <div className={styles.imageSlider}>
-                    <img src={post ? post.imageUrl : '/image/default.png'} alt="Post Image" className={styles.image} />
+                    <Image src={post ? post.imageUrl : '/image/default.png'} alt="Post Image" className={styles.image} />
                 </div>
             </div>
             {address && <div className={styles.address}>{address}</div>}

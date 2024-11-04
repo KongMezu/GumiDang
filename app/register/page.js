@@ -70,7 +70,7 @@ const Register = () => {
     if (!isFormValid) return;
 
     try {
-      const response = await apiClient.post("https://gummy-dang.com/api/sign-up", {//회원가입 정보 전송
+      const response = await apiClient.post("https://gummy-dang-server.com/api/sign-up", {//회원가입 정보 전송
         userName,
         password,
         nickname,

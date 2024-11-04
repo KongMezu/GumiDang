@@ -13,15 +13,15 @@ const PostsList = () => {
 
     useEffect(() => {
         const fetchPosts = async () => {
-            const accessToken = localStorage.getItem('AccessToken'); // 로컬 스토리지에서 액세스 토큰 가져오기
+            const accessToken = localStorage.getItem('AccessToken'); 
             try {
-                const response = await axios.get('https://gummy-dang.com/api/post/list', {
+                const response = await axios.get('https://gummy-dang-server.com/api/post/list', {
                     headers: {
-                        'Authorization': accessToken, // 인증 헤더 추가
+                        'Authorization': accessToken, 
                     },
                 });
                 if (response.data.code === 'COM-000') {
-                    // ID 순서대로 정렬 (작은 숫자 순서)
+            
                     setPosts(response.data.data.sort((a, b) => a.id - b.id));
                 } else {
                     setError('게시글을 불러오는 데 실패했습니다.');
@@ -49,7 +49,14 @@ const PostsList = () => {
             <div className={styles.grid}>
                 {posts.map((post) => (
                     <div key={post.id} className={styles.post} onClick={() => handlePostClick(post.postId)}>
-                        {post.imageUrl && <Image src={post.imageUrl} alt={post.title} className={styles.image} />}
+                        {post.imageUrl && <Image src={post.imageUrl} 
+                        alt={post.title} 
+                        className={styles.image} 
+                        width={150} 
+                        height={150}
+                        layout="responsive"
+                        objectFit="cover"
+                        />}
                         <h2 className={styles.postTitle}>{post.title}</h2>
                     </div>
                 ))}

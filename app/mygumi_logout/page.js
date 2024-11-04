@@ -22,7 +22,7 @@ const MyGumiLogout = () => {
 
     const fetchGumiData = async (token) => {
         try {
-            const response = await fetch('https://gummy-dang.com/api/records', {
+            const response = await fetch('https://gummy-dang-server.com/api/records', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -52,7 +52,6 @@ const MyGumiLogout = () => {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <FaArrowLeft className={styles.backArrow} onClick={handleBackClick} />
                 <h1 className={styles.title}>나의 구미</h1>
             </div>
             <div className={styles.gumiBox}>

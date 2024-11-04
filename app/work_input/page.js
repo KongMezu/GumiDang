@@ -1,3 +1,4 @@
+/*도착,시작 위치 입력 페이지 */
 'use client';
 
 import React, { useState, useEffect } from 'react';

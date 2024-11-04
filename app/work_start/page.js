@@ -1,3 +1,4 @@
+/* 시작 위치 */
 'use client';
 
 import React, { useState, useEffect } from "react";
@@ -81,7 +82,6 @@ const StartPage = () => {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <FaArrowLeft className={styles.backArrow} onClick={() => router.push(`/work_input?recordDate=${recordDate}`)} />
                 <h1 className={styles.title}>시작지</h1>
             </div>
             <div className={styles.content}>

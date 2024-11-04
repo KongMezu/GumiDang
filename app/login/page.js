@@ -45,7 +45,7 @@ const Login = () => {
 
   //카카오 로그인버튼 함수
   const handleKakaoLogin = () => {
-    window.location.href = 'https://gummy-dang.com/oauth2/authorization/kakao';
+    window.location.href = 'https://gummy-dang-server.com/oauth2/authorization/kakao';
   };
 
   //회원가입 라우팅

@@ -5,7 +5,7 @@ export async function post(req) {
   const { userName, password } = await req.json();
 
   try {
-    const response = await axios.post('https://gummy-dang.com/api/login', { userName, password });
+    const response = await axios.post('https://gummy-dang-server.com/api/login', { userName, password });
 
     if (response.data.code === 'COM-000') {
       const token = response.headers['authorization']; // 'Authorization' 소문자로 수정

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // 환경 변수에서 baseURL을 가져오는 것이 좋습니다
 const apiClient = axios.create({
-  baseURL: 'https://gummy-dang.com/',
+  baseURL: 'https://gummy-dang-server.com/',
   withCredentials: true 
 });
 

@@ -1,3 +1,6 @@
+/*게시판페이지 같음
+개선점 : 시작 위치, 도착 위치가 제대로 입력이 안됨 */
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -151,7 +154,7 @@ const WritePage = () => {
 
         try {
             // 게시글 데이터 전송
-            const response = await axios.post('https://gummy-dang.com/api/post', creatingData, {
+            const response = await axios.post('https://gummy-dang-server.com/api/post', creatingData, {
                 headers: {
                     'Authorization': accessToken, // 인증 헤더
                 },
@@ -184,7 +187,7 @@ const WritePage = () => {
         const formdata = new FormData();
         formdata.append('file', imageFile); // 업로드할 이미지 파일 추가
         try {
-            const response = await axios.post(`https://gummy-dang.com/api/image/post?postId=${postId}`, formdata, {
+            const response = await axios.post(`https://gummy-dang-server.com/api/image/post?postId=${postId}`, formdata, {
                 headers: {
                     'Authorization': accessToken,
                     'Content-Type': 'multipart/form-data', // 멀티파트 데이터 타입 설정
@@ -314,6 +317,9 @@ const WritePage = () => {
                             src={imagePreview}
                             alt="미리보기"
                             className={styles.imagePreview}
+                            width={400} // 원하는 가로 크기
+                            height={0} // 높이 자동 계산
+                            style={{ objectFit: 'contain', height: 'auto' }}
                         />
                     )}
                 </div>

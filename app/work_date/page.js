@@ -1,3 +1,4 @@
+/* 날짜 입력 */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -9,7 +10,7 @@ import './custom-datepicker.css';
 import styles from './work_date.module.css';
 import ko from 'date-fns/locale/ko';
 
-// 로케일 등록
+
 registerLocale('ko', ko);
 
 export default function WorkDate() {

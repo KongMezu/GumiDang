@@ -1,3 +1,5 @@
+/* 거리 측정 페이지 */
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -13,7 +15,7 @@ const CountDisPage = () => {
     const [endLon, setEndLon] = useState(null);
     const [recordDate, setRecordDate] = useState(null);
 
-    // 클라이언트 사이드에서만 실행되는 코드로 수정
+
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const params = new URLSearchParams(window.location.search);
@@ -29,7 +31,7 @@ const CountDisPage = () => {
             setEndLon(endLonParam);
             setRecordDate(recordDateParam);
         }
-    }, []); // 빈 배열을 사용하여 처음 한 번만 실행되도록
+    }, []); 
 
     useEffect(() => {
         if (startLat && startLon && endLat && endLon) {
@@ -72,9 +74,7 @@ const CountDisPage = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.header}>
-                <FaArrowLeft className={styles.backArrow} onClick={handleBack} />
-            </div>
+            <div className={styles.header}></div>
             <div className={styles.content}>
                 <h1 className={styles.title}>거리를 측정 중이에요 🍬</h1>
                 <div className={styles.loaderContainer}>

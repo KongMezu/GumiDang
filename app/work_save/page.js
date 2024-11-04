@@ -1,3 +1,4 @@
+/* 거리 측정 기록 페이지 */
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -14,7 +15,7 @@ import Image from 'next/image';
 
 const WorkSavePage = () => {
 
-    const [userName, setUserName] = useState('');
+    const [nickname, setNickName] = useState('');
     const [date, setDate] = useState({ month: '', day: '' });
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [walkRecordId, setWalkRecordId] = useState(1);
@@ -35,22 +36,24 @@ const WorkSavePage = () => {
                 if (token) {
                     setIsLoggedIn(true);
                     const [userResponse, recordsResponse] = await Promise.all([
-                        axios.get('https://gummy-dang.com/api/member', {
+                        axios.get('https://gummy-dang-server.com/api/member', {
                             headers: {
                                 'Authorization': `Bearer ${token}`,
                             },
                         }),
-                        axios.get('https://gummy-dang.com/api/records', {
+                        axios.get('https://gummy-dang-server.com/api/records', {
                             headers: {
                                 'Authorization': `Bearer ${token}`,
                             },
                         })
                     ]);
 
-                    const userData = userResponse.data;
+                    
+
+                    const userData = userResponse.data.data;
                     const recordsData = recordsResponse.data;
 
-                    setUserName(userData.userName);
+                    setNickName(userData.nickname);
                     setDate({ month: recordDate.split('-')[1], day: recordDate.split('-')[2] });
 
                     if (recordsData.data && recordsData.data.walkRecordInfos) {
@@ -144,7 +147,7 @@ const WorkSavePage = () => {
 
     const handleSave = async () => {
         try {
-            const response = await axios.post('https://gummy-dang.com/api/record', {
+            const response = await axios.post('https://gummy-dang-server.com/api/record', {
                 walkRecordId,
                 departureLat: startLat,
                 departureLon: startLon,
@@ -189,14 +192,17 @@ const WorkSavePage = () => {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <FaArrowLeft className={styles.backArrow} onClick={handleBack} />
             </div>
             <div className={styles.content}>
-                <h1 className={styles.title}>{`${date.month}월 ${date.day}일 ${userName}님은 이만큼 걸었어요!`}</h1>
+                <h1 className={styles.title}>{`${date.month}월 ${date.day}일 ${nickname}님은 이만큼 걸었어요!`}</h1>
                 <div id="map" className={styles.map}></div>
+                
                 <div className={styles.rollupJelly}>
-                    <Image src={getRollupJellyImage(distance)} alt="롤업젤리" />
-                </div>
+                <Image src={getRollupJellyImage(distance)} alt="롤업젤리" layout="intrinsic" // 이미지 비율 유지
+                    width={70}          // 원하는 너비 
+                    height={70}         // 원하는 높이
+                />
+            </div>
                 <button onClick={handleSave} className={styles.saveButton}>오늘의 구미 저장하기</button>
             </div>
         </div>

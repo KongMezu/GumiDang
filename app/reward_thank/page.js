@@ -1,3 +1,4 @@
+/*리워드 감사합니다 페이지 */
 'use client';
 
 import React from 'react';

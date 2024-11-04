@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import axios from 'axios';
 import styles from './reward_detail.module.css';
 
 const DaumPostcode = dynamic(() => import('react-daum-postcode'), { ssr: false });
@@ -12,28 +13,90 @@ const RewardDetail = () => {
     const [address, setAddress] = useState('');
     const [detailAddress, setDetailAddress] = useState('');
     const [postcode, setPostcode] = useState('');
+    const [nickname, setNickname] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [showPostcode, setShowPostcode] = useState(false);
     const postcodeRef = useRef(null);
+    const [rewardStatus, setRewardStatus] = useState('');
 
     useEffect(() => {
+        const fetchUserInfo = async () => {
+            const token = localStorage.getItem('AccessToken');
+            try {
+                const response = await axios.get('https://gummy-dang-server.com/api/member', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.data.code === 'COM-000') {
+                    setNickname(response.data.data.nickname || '');
+                    setPhoneNumber(response.data.data.phoneNumber || '');
+                    setAddress(response.data.data.address || '');
+                }
+            } catch (error) {
+                console.error('Failed to fetch user info:', error);
+            }
+        };
+        const fetchRewardInfo = async () => {
+            const token = localStorage.getItem('AccessToken');
+            try {
+                const response = await axios.get('https://gummy-dang-server.com/api/reward', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.data.code === 'COM-000') {
+                    setRewardStatus(response.data.data.rewardStatus);
+                }
+            } catch (error) {
+                console.error('Failed to fetch reward info:', error);
+            }
+        };
+
+        fetchUserInfo();
+        fetchRewardInfo();
+
         if (showPostcode && postcodeRef.current) {
             postcodeRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [showPostcode]);
 
-    const handleBackClick = () => {
-        router.push('/reward');
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const token = localStorage.getItem('AccessToken');
+        const fullAddress = `${address}, ${detailAddress}`;
+
+        try {
+            // 배송지 정보 제출
+            const response = await axios.put('https://gummy-dang-server.com/api/member', {
+                nickname: nickname,
+                address: fullAddress,
+                phoneNumber: phoneNumber
+            }, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.data.code === 'COM-000') {
+                console.log('Delivery info submitted successfully.');
+                await completeReward(token);
+                router.push('/reward_thank');
+            } else {
+                console.error('Failed to submit delivery info:', response.data);
+            }
+        } catch (error) {
+            console.error('Failed to submit delivery info:', error);
+        }
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log({
-            address,
-            detailAddress,
-            postcode,
-        });
-        alert('배송 정보가 입력되었습니다.');
-        router.push('/reward_thank');
+    const completeReward = async (token) => {
+        try {
+            const response = await axios.post('https://gummy-dang-server.com/api/reward/done', {}, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.data.code === 'COM-000') {
+                console.log('Reward status updated to DONE.');
+            } else {
+                console.error('Failed to update reward status:', response.data);
+            }
+        } catch (error) {
+            console.error('Error completing reward:', error);
+        }
     };
 
     const handleComplete = (data) => {
@@ -44,16 +107,27 @@ const RewardDetail = () => {
 
     return (
         <div className={styles.container}>
-            <button className={styles.backButton} onClick={handleBackClick}>←</button>
             <h1 className={styles.title}>리워드 배송 정보</h1>
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.inputGroup}>
                     <label className={styles.label}>성함</label>
-                    <input type="text" className={styles.input} required />
+                    <input 
+                        type="text" 
+                        className={styles.input} 
+                        value={nickname} 
+                        onChange={(e) => setNickname(e.target.value)} 
+                        required 
+                    />
                 </div>
                 <div className={styles.inputGroup}>
                     <label className={styles.label}>연락처</label>
-                    <input type="text" className={styles.input} required />
+                    <input 
+                        type="text" 
+                        className={styles.input} 
+                        value={phoneNumber} 
+                        onChange={(e) => setPhoneNumber(e.target.value)} 
+                        required 
+                    />
                 </div>
                 <div className={styles.inputGroup}>
                     <label className={styles.label}>우편번호</label>

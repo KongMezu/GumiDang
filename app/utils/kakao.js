@@ -7,15 +7,19 @@ export const loadKakaoMap = () => {
             script.async = true;
             script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=d3745faf495bcce30edb681fb85a6b3b&libraries=services&autoload=false`;
             script.onload = () => {
-                window.kakao.maps.load(() => {
-                    resolve(window.kakao);
-                });
+                if (window.kakao && window.kakao.maps) {
+                    window.kakao.maps.load(() => {
+                        resolve(window.kakao);
+                    });
+                } else {
+                    reject(new Error("Kakao maps API failed to load"));
+                }
             };
+            script.onerror = () => reject(new Error("Failed to load Kakao maps script"));
             document.head.appendChild(script);
         }
     });
 };
-
 export const getAddressFromCoords = (latLng) => {
     return new Promise((resolve, reject) => {
         const geocoder = new kakao.maps.services.Geocoder();

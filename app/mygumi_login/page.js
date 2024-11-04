@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
 import styles from './mygumi_login.module.css';
 import { loadKakaoMap } from "../utils/kakao";
@@ -14,11 +13,27 @@ const MyGumiLogin = () => {
     const [gumiList, setGumiList] = useState([]);
     const [rewardAvailable, setRewardAvailable] = useState(false);
     const [totalDistance, setTotalDistance] = useState(0);
+    const [distanceImage, setDistanceImage] = useState('/0.png');
     const [draggingGumi, setDraggingGumi] = useState(null);
     const [selectedGumi, setSelectedGumi] = useState(null);
     const [isDropping, setIsDropping] = useState(false);
-    const [showConfetti, setShowConfetti] = useState(false);
     const [searchParams, setSearchParams] = useState(null);
+    const maxDistance = 100000;
+
+    useEffect(() => {
+        const resetReward = localStorage.getItem('rewardReset') === 'true';
+
+        if (resetReward) {
+            setTotalDistance(0); // totalDistance 초기화
+            setDistanceImage('/0.png'); // distanceImage 초기화
+            localStorage.setItem('totalDistance', 0); // localStorage에서도 초기화
+            localStorage.setItem('distanceImage', '/0.png'); // localStorage에서 distanceImage도 초기화
+            localStorage.removeItem('rewardReset'); // 플래그 제거
+        } else {
+            fetchGumiData(); // 기존 데이터 불러오기
+        }
+    }, []);
+
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -36,49 +51,71 @@ const MyGumiLogin = () => {
         }
     }, [searchParams]);
 
+    
+    
+
     const fetchGumiData = async () => {
         try {
             const token = localStorage.getItem('AccessToken');
-            const response = await axios.get('https://gummy-dang.com/api/records', {
+            const response = await axios.get('https://gummy-dang-server.com/api/records', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
+            
             const data = response.data;
             const walkRecordInfos = data.data.walkRecordInfos || [];
-            const validGumiList = walkRecordInfos.map(record => ({
-                ...record,
+
+            const detailedRecords = await Promise.all(walkRecordInfos.map(async (record) => {
+                const detailResponse = await axios.get(`https://gummy-dang-server.com/api/record?recordId=${record.walkRecordId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+                const distance = detailResponse.data.data.distance || 0;
+                return { ...record, distance };
             }));
-            setGumiList(validGumiList);
+    
+            setGumiList(detailedRecords);
+            const isReset = localStorage.getItem('rewardReset') === 'true';
+            const totalDistance = isReset ? 0 : detailedRecords.reduce((acc, record) => acc + parseFloat(record.distance || 0), 0);
 
-            const totalDistance = validGumiList.reduce((acc, record) => acc + (record.distance || 0), 0);
+                
             setTotalDistance(totalDistance);
-
-            if (totalDistance >= 100000) {
-                setRewardAvailable(true);
-            } else {
-                setRewardAvailable(false);
+            setRewardAvailable(totalDistance >= maxDistance);
+            if (!isReset) {
+                localStorage.setItem('totalDistance', totalDistance);
             }
         } catch (error) {
             console.error('Error fetching gumi data:', error);
             setTotalDistance(0);
         }
     };
+    
+    useEffect(() => {
+        const totalDistance = gumiList.reduce((acc, record) => acc + parseFloat(record.distance || 0), 0);
+        setTotalDistance(totalDistance);
+        setRewardAvailable(totalDistance >= maxDistance);
+        console.log("총 거리 (totalDistance):", totalDistance); // 확인용
+    }, [gumiList]);
 
     const fetchGumiDetail = async (id) => {
         try {
             const token = localStorage.getItem('AccessToken');
-            const response = await axios.get(`https://gummy-dang.com/api/record?recordId=${id}`, {
+            const response = await axios.get(`https://gummy-dang-server.com/api/record?recordId=${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            const recordData = response.data.data;
 
+            console.log("API 응답:", response.data);
+    
+            const recordData = response.data.data;
+            if (!recordData) throw new Error('No record data found');
+    
             const kakao = await loadKakaoMap();
             if (kakao) {
                 const geocoder = new kakao.maps.services.Geocoder();
-
                 const getAddressFromCoords = (lat, lon) => {
                     return new Promise((resolve, reject) => {
                         geocoder.coord2Address(lon, lat, (result, status) => {
@@ -90,10 +127,10 @@ const MyGumiLogin = () => {
                         });
                     });
                 };
-
+    
                 const startLocation = await getAddressFromCoords(recordData.departureLat, recordData.departureLon);
                 const endLocation = await getAddressFromCoords(recordData.arrivalLat, recordData.arrivalLon);
-
+    
                 const detailedGumi = {
                     walkRecordId: recordData.walkRecordId,
                     recordDate: recordData.recordTime,
@@ -102,16 +139,15 @@ const MyGumiLogin = () => {
                     endLocation,
                     imageUrl: recordData.imageUrl,
                 };
+
+                console.log("상세 Gumi 데이터:", detailedGumi);
                 setSelectedGumi(detailedGumi);
                 setShowDetail(true);
             }
         } catch (error) {
             console.error('Error fetching gumi detail:', error);
         }
-    };
 
-    const handleBackClick = () => {
-        router.push('/work_date');
     };
 
     const handleAddClick = () => {
@@ -120,48 +156,7 @@ const MyGumiLogin = () => {
     };
 
     const handleGumiClick = async (gumi) => {
-        try {
-            const token = localStorage.getItem('AccessToken');
-            const response = await axios.get(`https://gummy-dang.com/api/record?recordId=${gumi.walkRecordId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            const recordData = response.data.data;
-
-            const kakao = await loadKakaoMap();
-            if (kakao) {
-                const geocoder = new kakao.maps.services.Geocoder();
-
-                const getAddressFromCoords = (lat, lon) => {
-                    return new Promise((resolve, reject) => {
-                        geocoder.coord2Address(lon, lat, (result, status) => {
-                            if (status === kakao.maps.services.Status.OK) {
-                                resolve(result[0].address.address_name);
-                            } else {
-                                reject('Failed to fetch address');
-                            }
-                        });
-                    });
-                };
-
-                const startLocation = await getAddressFromCoords(recordData.departureLat, recordData.departureLon);
-                const endLocation = await getAddressFromCoords(recordData.arrivalLat, recordData.arrivalLon);
-
-                const detailedGumi = {
-                    ...gumi,
-                    recordDate: recordData.recordTime,
-                    distance: Math.round(recordData.distance), // 소수점 제거
-                    startLocation,
-                    endLocation,
-                    imageUrl: recordData.imageUrl,
-                };
-                setSelectedGumi(detailedGumi);
-                setShowDetail(true);
-            }
-        } catch (error) {
-            console.error('Error fetching gumi detail:', error);
-        }
+        fetchGumiDetail(gumi.walkRecordId);
     };
 
     const handleDetailCloseClick = () => {
@@ -191,7 +186,7 @@ const MyGumiLogin = () => {
     const deleteGumi = async (id) => {
         try {
             const token = localStorage.getItem('AccessToken');
-            const response = await axios.delete(`https://gummy-dang.com/api/record?recordId=${id}`, {
+            await axios.delete(`https://gummy-dang-server.com/api/record?recordId=${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -199,16 +194,9 @@ const MyGumiLogin = () => {
             const updatedGumiList = gumiList.filter(gumi => gumi.walkRecordId !== id);
             setGumiList(updatedGumiList);
 
-            // 업데이트된 총 거리 재계산
             const newTotalDistance = updatedGumiList.reduce((acc, gumi) => acc + (gumi.distance || 0), 0);
             setTotalDistance(newTotalDistance);
-
-            // 보상 조건 재확인
-            if (newTotalDistance >= 100000) {
-                setRewardAvailable(true);
-            } else {
-                setRewardAvailable(false);
-            }
+            setRewardAvailable(newTotalDistance >= maxDistance);
 
             setShowDetail(false);
             setSelectedGumi(null);
@@ -218,6 +206,7 @@ const MyGumiLogin = () => {
     };
 
     const handleRewardClick = () => {
+        handleRewardReset(); 
         router.push('/reward');
     };
 
@@ -229,14 +218,13 @@ const MyGumiLogin = () => {
 
             try {
                 const token = localStorage.getItem('AccessToken');
-                const response = await axios.post(`https://gummy-dang.com/api/records/${selectedGumi.walkRecordId}/upload`, formData, {
+                const response = await axios.post(`https://gummy-dang-server.com/api/records/${selectedGumi.walkRecordId}/upload`, formData, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     },
                 });
 
                 const data = response.data;
-                console.log('Image upload response:', data);
                 setSelectedGumi(prev => ({ ...prev, imageUrl: data.imageUrl }));
                 const updatedGumiList = gumiList.map(gumi =>
                     gumi.walkRecordId === selectedGumi.walkRecordId ? { ...gumi, imageUrl: data.imageUrl } : gumi
@@ -248,43 +236,53 @@ const MyGumiLogin = () => {
         }
     };
 
-    const getJellyImage = (distance) => {
-        if (distance === 0) return '/0.png';
+    const getTotalDistanceImage = (distance) => {
+        if (distance >= maxDistance) return '/11.png';
+        const index = Math.min(Math.floor((distance / maxDistance) * 10), 10);
+        return `/${index}.png`;
+    };
+
+    const getRollupJellyImage = (distance) => {
         if (distance >= 10000) return '/11.png';
-        return `/${Math.min(Math.floor(distance / 1000), 10) + 1}.png`;
+        const index = Math.floor(distance / 1000);
+        return `/${index}.png`;
+    };
+
+    const handleRewardReset = () => {
+        setTotalDistance(0);
+        setDistanceImage('/0.png');
+        localStorage.setItem('totalDistance', 0);
+        localStorage.setItem('distanceImage', '/0.png');
+        localStorage.setItem('rewardReset', 'true'); 
     };
 
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <FaArrowLeft className={styles.backArrow} onClick={handleBackClick} />
                 <h1 className={styles.title}>나의 구미</h1>
             </div>
             <div className={styles.content}>
                 <div className={styles.gumiBox}>
-                    <div className={styles.gumiGrid}>
-                        {gumiList.length > 0 && gumiList.map((gumi) => {
-                            return (
-                                <div
-                                    key={gumi.walkRecordId}
-                                    className={`${styles.gumi} ${draggingGumi === gumi ? styles.draggingGumi : ''}`}
-                                    style={{ backgroundImage: `url('${gumi.gummyUrl}')` }}
-                                    onClick={() => handleGumiClick(gumi)}
-                                    draggable
-                                    onDragStart={() => handleDragStart(gumi)}
-                                    onDragEnd={handleDragEnd}
-                                ></div>
-                            );
-                        })}
+                <div className={styles.gumiGrid}>
+                        {gumiList.length > 0 && gumiList.map((gumi) => (
+                            <div
+                                key={gumi.walkRecordId}
+                                className={`${styles.gumi} ${draggingGumi === gumi ? styles.draggingGumi : ''}`}
+                                style={{ backgroundImage: `url('${gumi.gummyUrl}')` }}
+                                onClick={() => handleGumiClick(gumi)}
+                                draggable
+                                onDragStart={() => handleDragStart(gumi)}
+                                onDragEnd={handleDragEnd}
+                            ></div>
+                        ))}
                     </div>
                     <div className={styles.rollupJelly}>
-                        총 거리: {totalDistance} m
+                        <Image src={getTotalDistanceImage(totalDistance)} alt="Total Distance" width={200} height={200} />
                         {rewardAvailable && (
                             <div className={styles.rewardContainer}>
                                 <button className={styles.rewardButton} onClick={handleRewardClick}>
                                     보상 수령하기
                                 </button>
-                                {showConfetti && <div className={styles.confetti}></div>}
                             </div>
                         )}
                     </div>
@@ -306,17 +304,18 @@ const MyGumiLogin = () => {
                                 <button className={styles.deleteButton} onClick={() => deleteGumi(selectedGumi.walkRecordId)}>삭제</button>
                             </div>
                             <p className={styles.detailText}>
-                                <span className={styles.highlightedText}>{selectedGumi.startLocation}</span>에서부터<br />
+                                <span className={styles.highlightedText}>{selectedGumi.startLocation}</span> 에서부터<br />
                                 <span className={styles.highlightedText}>{selectedGumi.endLocation}</span>까지의 산책을 하다<br />
                                 거리: {selectedGumi.distance} m
                             </p>
                             <div className={styles.detailImage} onClick={() => document.getElementById('imageUpload').click()}>
                                 {selectedGumi.imageUrl ? (
-                                    <Image src={selectedGumi.imageUrl} alt="Uploaded" />
+                                    <Image src={selectedGumi.imageUrl} alt="Uploaded" width={70} height={70} />
                                 ) : (
                                     '(사진)'
                                 )}
                             </div>
+
                             <input
                                 type="file"
                                 id="imageUpload"
@@ -324,7 +323,13 @@ const MyGumiLogin = () => {
                                 onChange={handleImageUpload}
                             />
                             <div className={styles.detailRollupJelly}>
-                                <Image src={getJellyImage(selectedGumi.distance)} alt="Rollup Jelly" className={styles.jellyImage} />
+                                <Image
+                                    src={getRollupJellyImage(selectedGumi.distance)}
+                                    alt="Rollup Jelly"
+                                    className={styles.jellyImage}
+                                    width={200}
+                                    height={200}
+                                />
                             </div>
                         </div>
                     </div>

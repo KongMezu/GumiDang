@@ -24,7 +24,7 @@ const PostDetail = ({ params }) => {
                     setNickname(storedNickname); // 닉네임 상태 업데이트
                 }
 
-                const response = await axios.get(`https://gummy-dang.com/api/post/${params.id}`, {
+                const response = await axios.get(`https://gummy-dang-server.com/api/post/${params.id}`, {
                     headers: {
                         'Authorization': accessToken, // 인증 헤더 추가
                     },
@@ -84,13 +84,21 @@ const PostDetail = ({ params }) => {
             <div className={styles.separator}></div>
             <div className={styles.postTitle}>{post ? post.title : ''}</div>
             <div className={styles.descriptionContainer}>
-                <Image src="/image/pencil.PNG" alt="Edit" className={styles.icon} />
+                <Image src="/image/pencil.PNG" alt="Edit" className={styles.icon}
+                width={50} // 원하는 가로 크기
+                height={50} // 기본 높이로 설정
+                />
                 <div className={styles.description}>{post ? post.description : ''}</div>
             </div>
             <div className={styles.mapAndImageContainer}>
                 <div id="map" className={styles.map}></div>
                 <div className={styles.imageSlider}>
-                    <Image src={post ? post.imageUrl : '/image/default.png'} alt="Post Image" className={styles.image} />
+                    <Image src={post ? post.imageUrl : '/image/default.png'} alt="Post Image" 
+                    className={styles.image} 
+                    width={200} // 원하는 가로 크기
+                    height={200} // 기본 높이로 설정
+                    layout="responsive" // 비율을 유지하도록 설정
+                    />
                 </div>
             </div>
             {address && <div className={styles.address}>{address}</div>}

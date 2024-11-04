@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 import './globals.css';
+import Head from 'next/head';
 
 const Onboarding = () => {
   const router = useRouter();
@@ -22,6 +23,12 @@ const Onboarding = () => {
   };
 
   return (
+    <>
+    <Head>
+        <meta property="og:title" content="GummyDang" />
+        <meta property="og:description" content="Take a walk. Take a gummy!" />
+        <meta property="og:url" content="https://gummydang-1012152884843.asia-northeast3.run.app" />
+      </Head>
     <div className={styles.container} onClick={handleTouch}>
       <div className={styles.textContainer}>
         <h1 style={{ color }} className={styles.logoText}>
@@ -34,6 +41,7 @@ const Onboarding = () => {
         </p>
       </div>
     </div>
+    </>
   );
 };
 

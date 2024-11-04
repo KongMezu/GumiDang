@@ -18,7 +18,7 @@ const Onboarding = () => {
   }, [colors]);
 
   const handleTouch = () => {
-    router.push('/write');
+    router.push('/posts');
   };
 
   return (

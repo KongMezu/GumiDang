@@ -3,7 +3,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
 import styles from './work_save.module.css';
 import Image from 'next/image';
@@ -141,10 +140,6 @@ const WorkSavePage = () => {
         }
     }, [startLat, startLon, endLat, endLon]);
 
-    const handleBack = () => {
-        router.push('/');
-    };
-
     const handleSave = async () => {
         try {
             const response = await axios.post('https://gummy-dang-server.com/api/record', {
@@ -166,7 +161,7 @@ const WorkSavePage = () => {
 
             const params = new URLSearchParams({
                 walkRecordId: walkRecordId.toString(),
-                recordDate: data.data.recordTime,
+                recordDate: data.data.recordTime || recordDate,
                 distance: data.data.distance,
                 startLocation: `${data.data.departureLat}, ${data.data.departureLon}`,
                 endLocation: `${data.data.arrivalLat}, ${data.data.arrivalLon}`,

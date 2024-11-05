@@ -3,9 +3,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { FaArrowLeft } from 'react-icons/fa';
 import axios from 'axios';
-import styles from './work_save.module.css';
 import Image from 'next/image';
+import styles from './work_save.module.css';
 
 //import dynamic from 'next/dynamic';
 // import ModalReviewAddPath from './ModalReviewAddPath';
@@ -74,7 +75,7 @@ const WorkSavePage = () => {
     useEffect(() => {
         if (typeof window !== "undefined") {
             const script = document.createElement('script');
-            script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=d3745faf495bcce30edb681fb85a6b3b&autoload=false`;
+            script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=d3745faf495bcce30edb681fb85a6b3b&libraries=services&autoload=false`;
             script.async = true;
             document.head.appendChild(script);
 
@@ -140,6 +141,10 @@ const WorkSavePage = () => {
         }
     }, [startLat, startLon, endLat, endLon]);
 
+    const handleBack = () => {
+        router.push('/');
+    };
+
     const handleSave = async () => {
         try {
             const response = await axios.post('https://gummy-dang-server.com/api/record', {
@@ -161,7 +166,7 @@ const WorkSavePage = () => {
 
             const params = new URLSearchParams({
                 walkRecordId: walkRecordId.toString(),
-                recordDate: data.data.recordTime || recordDate,
+                recordDate: data.data.recordTime,
                 distance: data.data.distance,
                 startLocation: `${data.data.departureLat}, ${data.data.departureLon}`,
                 endLocation: `${data.data.arrivalLat}, ${data.data.arrivalLon}`,
